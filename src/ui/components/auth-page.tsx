@@ -396,6 +396,8 @@ function messageForAuthError(error: string | undefined): string {
     case 'OAuthAccountNotLinked':
     case 'google':
       return 'Google sign-in could not complete. Check the OAuth client and callback URL configuration.';
+    case 'Callback':
+      return 'Google sign-in reached Roundtable, but the callback failed while creating the session.';
     case 'AccessDenied':
       return 'Google did not return a verified email for this account.';
     case 'Configuration':
@@ -403,7 +405,7 @@ function messageForAuthError(error: string | undefined): string {
     case 'SessionRequired':
       return 'Please sign in to continue.';
     default:
-      return 'Sign-in failed. Please try again.';
+      return `Sign-in failed (${error}). Please try again.`;
   }
 }
 

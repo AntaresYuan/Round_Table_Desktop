@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { applyDevelopmentAuthUrl, authUrlFromRequest } from '../src/server/auth.js';
+import { applyDevelopmentAuthUrl, authUrlFromRequest, googleProfileAllowsSignIn } from '../src/server/auth.js';
 
 const originalNodeEnv = process.env.NODE_ENV;
 const originalNextAuthUrl = process.env.NEXTAUTH_URL;
@@ -30,6 +30,19 @@ describe('auth URL resolution', () => {
 
   it('rejects malformed host headers', () => {
     expect(authUrlFromRequest({ headers: { host: 'localhost:3000/path' } })).toBeNull();
+  });
+});
+
+describe('Google sign-in profile checks', () => {
+  it('accepts verified Google profiles when email_verified is a boolean or string', () => {
+    expect(googleProfileAllowsSignIn({ email: 'user@example.com', email_verified: true })).toBe(true);
+    expect(googleProfileAllowsSignIn({ email: 'user@example.com', email_verified: 'true' })).toBe(true);
+  });
+
+  it('rejects missing or unverified Google profiles', () => {
+    expect(googleProfileAllowsSignIn({ email: 'user@example.com', email_verified: false })).toBe(false);
+    expect(googleProfileAllowsSignIn({ email: 'user@example.com', email_verified: 'false' })).toBe(false);
+    expect(googleProfileAllowsSignIn({ email_verified: true })).toBe(false);
   });
 });
 

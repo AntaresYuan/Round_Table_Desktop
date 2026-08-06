@@ -57,6 +57,18 @@ export async function upsertUser(emailInput: string, nameInput?: string | null):
   });
 }
 
+type GoogleProfile = {
+  email?: string | undefined;
+  email_verified?: boolean | string | undefined;
+};
+
+export function googleProfileAllowsSignIn(profile: GoogleProfile | undefined): boolean {
+  const email = profile?.email?.trim();
+  if (!email) return false;
+  const verified = profile?.email_verified;
+  return verified === true || verified === 'true';
+}
+
 export function cliActor(): Actor {
   return {
     id: process.env.ROUNDTABLE_CLI_USER_ID || 'cli-user',
@@ -106,8 +118,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     signIn({ account, profile }) {
       if (account?.provider !== 'google') return true;
-      const googleProfile = profile as { email?: string | undefined; email_verified?: boolean | undefined } | undefined;
-      return Boolean(googleProfile?.email && googleProfile.email_verified === true);
+      return googleProfileAllowsSignIn(profile as GoogleProfile | undefined);
     },
     async jwt({ token, user }) {
       if (user) {
