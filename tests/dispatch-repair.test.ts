@@ -293,6 +293,15 @@ describe('runAgentTask — chat model deliverable extraction', () => {
     brief: '做一个富士专用的镜头与相机整理工具',
   });
 
+  const pythonTask = () => task({
+    id: 'task_python_atlas',
+    role: 'implementer',
+    owner: 'atlas',
+    assignee: '@atlas',
+    title: 'Write RMU Python code (Atlas)',
+    brief: '调研 WMDP paper 中的 RMU 方法并写 Python 代码。Planning meeting objective: 在现有项目中调研需求背景并编写可运行的 Python 代码。Acceptance criteria:\n- Python 代码可以在本地运行。\n- 附有运行命令、输入输出说明和验证证据。',
+  });
+
   it('recovers a fenced, truncated HTML response into a clean document', async () => {
     // Fence + cut after body content started: renderable, so keep it clean.
     stubModelResponse('```html\n<!DOCTYPE html>\n<html><head></head><body><h1>真鲜</h1><p>每一天，从产地到');
@@ -371,6 +380,22 @@ describe('runAgentTask — chat model deliverable extraction', () => {
     expect(result.ok).toBe(true);
     expect(result.kind).toBe('markdown');
     expect(result.path.endsWith('.md')).toBe(true);
+  });
+
+  it('writes Python coding requests as code artifacts instead of HTML previews', async () => {
+    stubModelResponse('```python\nfrom __future__ import annotations\n\n\ndef rmu_loss() -> float:\n    return 0.0\n```');
+    const result = await runAgentTask({
+      adapter: 'openai-compat',
+      workspace: tempDir,
+      task: pythonTask(),
+      message: '去调研一下 llm unlearning 中 WMDP paper 里的 RMU 方法，写好 Python 代码',
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.kind).toBe('code');
+    expect(result.path.endsWith('.py')).toBe(true);
+    expect(result.text).toContain('def rmu_loss');
+    expect(result.text).not.toContain('```');
   });
 });
 

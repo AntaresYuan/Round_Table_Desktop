@@ -9,8 +9,9 @@ import {
   listMissions,
   listWorkflowTemplates,
   selectWorkflowTemplate,
+  updateMissionForDispatch,
 } from '../src/server/actions/mission-actions.js';
-import { approveTurn, createTurn, decideTurnFinalDelivery } from '../src/server/actions/turn-actions.js';
+import { approveTurn, createTurn, decideTurnFinalDelivery, getTurn } from '../src/server/actions/turn-actions.js';
 import { createWorkbench } from '../src/server/actions/workbench-actions.js';
 import { resetData } from '../src/server/store.js';
 import type { Actor } from '../src/server/types.js';
@@ -175,5 +176,59 @@ describe('Mission P0 migration', () => {
     expect(delivery?.preview).toContain('Payment handoff');
     expect(delivery?.preview).toContain('Post-payment confirmation');
     expect(delivery?.preview).toContain('ZIP must be 5 digits');
+  });
+
+  it('shows a failed review gate as failed instead of still waiting for reviewer output', async () => {
+    const turn = await createTurn({
+      actor,
+      message: 'Build a research note generator and review it.',
+    });
+    const storedTurn = await getTurn(turn.id);
+    expect(storedTurn).not.toBeNull();
+    const now = new Date().toISOString();
+    const reviewer = storedTurn!.plan.tasks.find((task) => task.role === 'reviewer');
+    expect(reviewer).toBeDefined();
+
+    const failedTurn = {
+      ...storedTurn!,
+      needsApproval: false,
+      approvalStatus: 'approved' as const,
+      approvedAt: now,
+      dispatchStatus: 'failed' as const,
+      dispatchStage: 'failed',
+      dispatchError: 'one_or_more_tasks_failed',
+      dispatch: storedTurn!.plan.tasks.map((task) => ({
+        taskId: task.id,
+        agentId: task.owner ?? task.assignee.replace(/^@/, ''),
+        status: task.id === reviewer!.id ? 'failed' as const : 'completed' as const,
+        events: [],
+        startedAt: now,
+        finishedAt: now,
+        error: task.id === reviewer!.id ? 'deliverable_not_usable' : null,
+        artifactIds: [],
+      })),
+      workflowRun: {
+        activeStageId: 'review',
+        stageStates: Object.fromEntries(storedTurn!.plan.tasks.map((task) => [
+          task.id,
+          { status: task.id === reviewer!.id ? 'failed' as const : 'done' as const },
+        ])),
+        taskStates: Object.fromEntries(storedTurn!.plan.tasks.map((task) => [
+          task.id,
+          {
+            status: task.id === reviewer!.id ? 'failed' as const : 'done' as const,
+            stageId: task.stageId ?? null,
+          },
+        ])),
+      },
+    };
+
+    const mission = await updateMissionForDispatch(failedTurn);
+    const checkpoint = mission?.checkpoints.find((item) => item.kind === 'reviewer_signoff');
+    expect(mission?.status).toBe('failed');
+    expect(mission?.currentStageId).toBe('review');
+    expect(checkpoint?.status).toBe('blocked');
+    expect(checkpoint?.requiredAction).toContain('Review failed');
+    expect(checkpoint?.requiredAction).not.toContain('Wait for reviewer');
   });
 });

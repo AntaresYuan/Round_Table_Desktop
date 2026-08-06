@@ -1,7 +1,7 @@
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createChat } from '../src/server/actions/chat-actions.js';
 import {
   answerClarification,
@@ -162,6 +162,37 @@ describe('dispatchTurn — DAG scheduler integration', () => {
 
     expect(result.dispatchStatus).toBe('completed');
     expect(result.dispatchAdapter).toBe('local-dispatch');
+  });
+
+  it('falls back to local dispatch when an OpenAI-compatible provider request fails', async () => {
+    process.env.ROUNDTABLE_OPENAI_API_KEY = 'test-key';
+    process.env.ROUNDTABLE_OPENAI_BASE_URL = 'https://model.test/v1';
+    process.env.ROUNDTABLE_OPENAI_MODEL = 'test-model';
+    vi.stubGlobal('fetch', vi.fn(async () =>
+      new Response(JSON.stringify({ error: { message: 'Insufficient Balance' } }), {
+        status: 402,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    ));
+
+    const turn = await createTurn({ actor, message: '@atlas build the navbar.' });
+    const result = await approveTurn({
+      actor,
+      turnId: turn.id,
+      decision: 'approve',
+      autoDispatch: true,
+      agentAdapter: 'openai-compat',
+    });
+
+    expect(result.dispatchStatus).toBe('completed');
+    expect(result.dispatchAdapter).toBe('openai-compat');
+    expect(result.records.every((record) => record.status === 'completed')).toBe(true);
+    expect(result.records.some((record) =>
+      record.events.some((event) =>
+        event.type === 'thinking_delta'
+        && event.delta.includes('fell back to local-dispatch'),
+      ),
+    )).toBe(true);
   });
 
   it('does not keep final delivery blocked after a fixer repairs a blocking review', async () => {

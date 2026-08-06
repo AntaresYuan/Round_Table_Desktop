@@ -13,8 +13,8 @@ import { extractMemorySection } from './memory-extract.js';
 import { agentForTask, type AgentProfile } from './agent-roster.js';
 import { deliverableText } from './deliverable.js';
 import { runOnE2B } from './adapters/e2b-adapter.js';
-import { MiniMaxUnavailableError, resolvedMiniMaxModel, runOnMiniMax } from './adapters/minimax-adapter.js';
-import { OpenAICompatUnavailableError, resolvedOpenAICompatModel, runOnOpenAICompat } from './adapters/openai-compat-adapter.js';
+import { MiniMaxRequestError, MiniMaxUnavailableError, resolvedMiniMaxModel, runOnMiniMax } from './adapters/minimax-adapter.js';
+import { OpenAICompatRequestError, OpenAICompatUnavailableError, resolvedOpenAICompatModel, runOnOpenAICompat } from './adapters/openai-compat-adapter.js';
 import { configuredRuntimeForAgent, mergedRuntimeConfigForAgent } from './cli-runtimes/registry.js';
 import { executeCliRuntime } from './cli-runtimes/runner.js';
 import {
@@ -523,7 +523,7 @@ async function runMiniMaxTask(input: {
     toolName: 'minimax_chat',
     model,
     run: runOnMiniMax,
-    isUnavailable: (error) => error instanceof MiniMaxUnavailableError,
+    isUnavailable: (error) => error instanceof MiniMaxUnavailableError || error instanceof MiniMaxRequestError,
   });
 }
 
@@ -542,7 +542,7 @@ async function runOpenAICompatTask(input: {
     toolName: 'model_chat',
     model,
     run: runOnOpenAICompat,
-    isUnavailable: (error) => error instanceof OpenAICompatUnavailableError,
+    isUnavailable: (error) => error instanceof OpenAICompatUnavailableError || error instanceof OpenAICompatRequestError,
   });
 }
 
@@ -562,7 +562,8 @@ function pathForTask(task: PlanTask): string {
   // Applies to chat-only model adapters, whose response text IS the deliverable;
   // CLI-backed agents write real files instead (see transcriptPathForTask).
   if (agent.role === 'implementer') {
-    const ext = wantsWebPage(`${task.title} ${task.brief}`) ? 'html' : 'md';
+    const taskText = `${task.title} ${task.objective ?? ''} ${task.brief} ${(task.acceptanceCriteria ?? []).join(' ')}`;
+    const ext = wantsPythonCode(taskText) ? 'py' : wantsWebPage(taskText) ? 'html' : 'md';
     return `.roundtable/runs/work/${slug}.${ext}`;
   }
   if (agent.role === 'reviewer') return `.roundtable/runs/review/${slug}.md`;
@@ -597,12 +598,22 @@ function transcriptMarkdown(task: PlanTask, agentName: string, runtime: string, 
 
 // Does this build target a renderable web page? Covers EN + 中文 vocabulary.
 function wantsWebPage(text: string): boolean {
+  if (wantsCodeArtifact(text)) return false;
   return /\b(website|web\s?page|webpage|landing|page|site|html|frontend|ui|dashboard|portfolio|checkout|payment|cart)\b|网站|网页|页面|前端|官网|落地页|主页|仪表盘|看板|结账|支付|购物车/i.test(text);
+}
+
+function wantsPythonCode(text: string): boolean {
+  return /\bpython\b|\.py\b|py脚本|python脚本|python代码/i.test(text);
+}
+
+function wantsCodeArtifact(text: string): boolean {
+  return wantsPythonCode(text)
+    || /\b(script|code|cli|library|package|module|function|notebook|jupyter|api)\b|代码|脚本|函数|模块|库|命令行|接口|笔记本/i.test(text);
 }
 
 function kindForPath(path: string): ArtifactKind {
   if (path.endsWith('.html')) return 'preview';
-  if (path.endsWith('.ts') || path.endsWith('.tsx') || path.endsWith('.js')) return 'code';
+  if (path.endsWith('.ts') || path.endsWith('.tsx') || path.endsWith('.js') || path.endsWith('.py')) return 'code';
   return 'markdown';
 }
 
@@ -614,6 +625,7 @@ async function writeWorkspaceFile(workspace: string, relativePath: string, text:
 
 function localArtifactText(task: PlanTask, message: string, path: string, handoffContext?: string): string {
   if (path.endsWith('.html')) return localHtmlArtifact(message);
+  if (path.endsWith('.py')) return localPythonArtifact(message);
   const focus = userGoalTitle(message);
   const agent = agentForTask(task);
   const role = agent.role;
@@ -637,6 +649,52 @@ function localArtifactText(task: PlanTask, message: string, path: string, handof
     '## Notes',
     '',
     'This artifact was produced through the Roundtable backend action layer and can be replayed by devrt.',
+  ].join('\n');
+}
+
+function localPythonArtifact(message: string): string {
+  const title = userGoalTitle(message);
+  return [
+    '"""',
+    `${title}`,
+    '',
+    'Deterministic Roundtable fallback implementation.',
+    'Replace the placeholder algorithm with the paper-specific RMU details after review.',
+    '"""',
+    '',
+    'from __future__ import annotations',
+    '',
+    'from dataclasses import dataclass',
+    'from typing import Iterable',
+    '',
+    '',
+    '@dataclass(frozen=True)',
+    'class RMUConfig:',
+    '    layer: int',
+    '    coefficient: float = 1.0',
+    '    retain_weight: float = 1.0',
+    '',
+    '',
+    'def normalize_vector(values: Iterable[float]) -> list[float]:',
+    '    vector = [float(value) for value in values]',
+    '    norm = sum(value * value for value in vector) ** 0.5',
+    '    if norm == 0:',
+    '        return [0.0 for _ in vector]',
+    '    return [value / norm for value in vector]',
+    '',
+    '',
+    'def rmu_direction(forget_activations: Iterable[float], retain_activations: Iterable[float], config: RMUConfig) -> list[float]:',
+    '    forget = normalize_vector(forget_activations)',
+    '    retain = normalize_vector(retain_activations)',
+    '    width = min(len(forget), len(retain))',
+    '    return [config.coefficient * forget[i] - config.retain_weight * retain[i] for i in range(width)]',
+    '',
+    '',
+    'if __name__ == "__main__":',
+    '    cfg = RMUConfig(layer=12, coefficient=1.2, retain_weight=0.8)',
+    '    direction = rmu_direction([1.0, 0.5, 0.1], [0.2, 0.4, 0.9], cfg)',
+    '    print({"layer": cfg.layer, "direction": direction})',
+    '',
   ].join('\n');
 }
 

@@ -97,6 +97,25 @@ describe('planning meeting', () => {
     expect(result.plan.tasks[1]?.brief).toContain('Do not start until all are completed');
   });
 
+  it('does not rewrite a Chinese Python coding request into a page/mobile task during fallback', async () => {
+    process.env.ROUNDTABLE_PLANNING_MEETING_MODEL = 'local';
+
+    const result = await conductPlanningMeeting({
+      message: '去调研一下 llm unlearning 中 WMDP paper 里的 RMU 方法，写好 Python 代码',
+      plan,
+      workspace: null,
+      now: '2026-07-12T00:00:00.000Z',
+    });
+
+    const implementer = result.plan.tasks.find((task) => task.role === 'implementer');
+    const text = `${implementer?.objective ?? ''}\n${implementer?.brief ?? ''}\n${(implementer?.acceptanceCriteria ?? []).join('\n')}`;
+    expect(text).toContain('Python');
+    expect(text).toContain('代码');
+    expect(text).not.toContain('核心页面');
+    expect(text).not.toContain('移动端验证');
+    expect(text).not.toContain('mobile verification');
+  });
+
   it('uses a cheap API model in linear rounds and validates synthesis task ids', async () => {
     process.env.ROUNDTABLE_OPENAI_API_KEY = 'test-key';
     process.env.ROUNDTABLE_OPENAI_BASE_URL = 'https://planning.test/v1';

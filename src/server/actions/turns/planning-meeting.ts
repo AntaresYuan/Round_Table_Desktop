@@ -481,14 +481,24 @@ function localSynthesis(plan: Plan, repositorySummary: string, goal: string): Me
 function localTaskObjective(task: PlanTask, goal: string, zh: boolean): string {
   const scopedGoal = limitText(goal.replace(/\s*Clarified requirements:[\s\S]*$/i, '').trim(), 48);
   const stage = task.stageKind ?? task.stageId;
+  const codeGoal = wantsCodeArtifact(goal);
+  const pythonGoal = wantsPythonArtifact(goal);
   if (zh) {
     if (task.role === 'architect' && stage === 'review') {
       return '复核实现是否遵守已经确定的模块边界、复用方式和依赖关系，并指出集成风险。';
     }
     if (task.role === 'architect') {
-      return '检查真实代码入口和可复用部分，确定页面结构、数据流、模块边界与实现约束。';
+      return codeGoal
+        ? '检查真实代码入口、依赖和可复用部分，确定脚本结构、数据流、模块边界与实现约束。'
+        : '检查真实代码入口和可复用部分，确定页面结构、数据流、模块边界与实现约束。';
     }
     if (task.role === 'implementer') {
+      if (pythonGoal) {
+        return `在现有项目中调研需求背景并编写可运行的 Python 代码：${scopedGoal}，同时附上运行方式和验证证据。`;
+      }
+      if (codeGoal) {
+        return `在现有项目中完成可运行的代码实现：${scopedGoal}，同时附上运行方式和验证证据。`;
+      }
       return `在现有项目中完成核心页面与交互：${scopedGoal}，并提供可运行结果和移动端验证。`;
     }
     if (task.role === 'reviewer') {
@@ -501,9 +511,17 @@ function localTaskObjective(task: PlanTask, goal: string, zh: boolean): string {
     return 'Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.';
   }
   if (task.role === 'architect') {
-    return 'Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.';
+    return codeGoal
+      ? 'Inspect the real entrypoint, dependencies, and reusable code, then define script structure, data flow, module boundaries, and implementation constraints.'
+      : 'Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.';
   }
   if (task.role === 'implementer') {
+    if (pythonGoal) {
+      return `Research the requirement context and write runnable Python code for: ${scopedGoal}, with usage notes and verification evidence.`;
+    }
+    if (codeGoal) {
+      return `Build runnable code in the existing project for: ${scopedGoal}, with usage notes and verification evidence.`;
+    }
     return `Build the core pages and interactions in the existing project for: ${scopedGoal}, with a runnable result and mobile verification.`;
   }
   if (task.role === 'reviewer') {
@@ -514,18 +532,42 @@ function localTaskObjective(task: PlanTask, goal: string, zh: boolean): string {
 }
 
 function acceptanceCriteriaFor(task: PlanTask, zh = false): string[] {
+  const text = `${task.title} ${task.brief} ${task.objective ?? ''}`;
+  const codeTask = wantsCodeArtifact(text);
+  const pythonTask = wantsPythonArtifact(text);
   if (zh) {
     if (task.role === 'planner') return ['范围、负责人、依赖和风险已经明确。', '用户确认前不启动任何下游任务。'];
-    if (task.role === 'architect') return ['模块边界、复用接口和基线目录已经明确。', '硬编码与集成风险已经指出。'];
-    if (task.role === 'implementer') return ['分配的功能在现有项目中真实可用。', '附有相关测试或验证证据。'];
+    if (task.role === 'architect') return codeTask
+      ? ['脚本边界、依赖、输入输出和复用接口已经明确。', '硬编码与集成风险已经指出。']
+      : ['模块边界、复用接口和基线目录已经明确。', '硬编码与集成风险已经指出。'];
+    if (task.role === 'implementer') {
+      if (pythonTask) return ['Python 代码可以在本地运行。', '附有运行命令、输入输出说明和验证证据。'];
+      if (codeTask) return ['代码实现可以在本地运行。', '附有运行命令和验证证据。'];
+      return ['分配的功能在现有项目中真实可用。', '附有相关测试或验证证据。'];
+    }
     if (task.role === 'reviewer') return ['需求覆盖与回归风险已经检查。', '阻塞问题带有严重级别和证据。'];
     return ['任务目标已完成并附带验证证据。'];
   }
   if (task.role === 'planner') return ['Scope, owner, dependencies, and risks are explicit.', 'No downstream task starts before plan approval.'];
-  if (task.role === 'architect') return ['Module boundaries and reused interfaces are named.', 'Hardcoded values and integration risks are called out.'];
-  if (task.role === 'implementer') return ['The assigned slice works in the existing project.', 'Relevant tests or verification evidence are recorded.'];
+  if (task.role === 'architect') return codeTask
+    ? ['Script boundaries, dependencies, inputs, outputs, and reused interfaces are named.', 'Hardcoded values and integration risks are called out.']
+    : ['Module boundaries and reused interfaces are named.', 'Hardcoded values and integration risks are called out.'];
+  if (task.role === 'implementer') {
+    if (pythonTask) return ['The Python code runs locally.', 'Usage command, inputs/outputs, and verification evidence are recorded.'];
+    if (codeTask) return ['The code runs locally.', 'Usage command and verification evidence are recorded.'];
+    return ['The assigned slice works in the existing project.', 'Relevant tests or verification evidence are recorded.'];
+  }
   if (task.role === 'reviewer') return ['Requirements and regression risks are checked.', 'Blocking findings use explicit severity and evidence.'];
   return ['The assigned objective is complete and verification evidence is attached.'];
+}
+
+function wantsPythonArtifact(text: string): boolean {
+  return /\bpython\b|\.py\b|py脚本|python脚本|python代码/i.test(text);
+}
+
+function wantsCodeArtifact(text: string): boolean {
+  return wantsPythonArtifact(text)
+    || /\b(script|code|cli|library|package|module|function|notebook|jupyter|api)\b|代码|脚本|函数|模块|库|命令行|接口|笔记本/i.test(text);
 }
 
 function validatedDecisions(

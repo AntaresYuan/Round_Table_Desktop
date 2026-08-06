@@ -999,10 +999,15 @@ function updateCheckpoints(
     if (checkpoint.kind === 'reviewer_signoff') {
       const reviewerDone = turn.dispatch.some((record) => record.status === 'completed'
         && turn.plan.tasks.find((task) => task.id === record.taskId)?.role === 'reviewer');
+      const failed = status === 'failed';
       return {
         ...checkpoint,
-        status: reviewerDone ? 'satisfied' : status === 'failed' ? 'blocked' : 'pending',
-        requiredAction: reviewerDone ? null : 'Wait for reviewer confidence output.',
+        status: reviewerDone ? 'satisfied' : failed ? 'blocked' : 'pending',
+        requiredAction: reviewerDone
+          ? null
+          : failed
+            ? 'Review failed before confidence output. Check the failed task and retry the run.'
+            : 'Wait for reviewer confidence output.',
         resolvedAt: reviewerDone ? checkpoint.resolvedAt ?? now : null,
       };
     }
@@ -1118,6 +1123,11 @@ function missionStatusFromTurn(turn: LocalTurn, stages: MissionStage[]): Mission
 
 function currentStageFromStages(stages: MissionStage[], status: MissionStatus): string | null {
   if (status === 'completed') return 'ship';
+  if (status === 'failed') {
+    return stages.find((stage) => stage.status === 'failed')?.id
+      ?? stages.find((stage) => stage.status === 'blocked')?.id
+      ?? null;
+  }
   return stages.find((stage) => stage.status === 'active' || stage.status === 'running' || stage.status === 'blocked')?.id
     ?? stages.find((stage) => stage.status === 'pending')?.id
     ?? null;

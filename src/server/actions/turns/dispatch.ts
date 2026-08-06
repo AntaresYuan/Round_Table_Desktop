@@ -8,8 +8,8 @@ import type {
   WorkflowRun,
 } from '../../types.js';
 import { E2BUnavailableError } from '../adapters/e2b-adapter.js';
-import { MiniMaxUnavailableError } from '../adapters/minimax-adapter.js';
-import { OpenAICompatUnavailableError } from '../adapters/openai-compat-adapter.js';
+import { MiniMaxRequestError, MiniMaxUnavailableError } from '../adapters/minimax-adapter.js';
+import { OpenAICompatRequestError, OpenAICompatUnavailableError } from '../adapters/openai-compat-adapter.js';
 import { normalizeAdapter, runAgentTask } from '../agent-runner.js';
 import {
   buildHandoffCardV2,
@@ -248,7 +248,9 @@ export async function dispatchTurn(input: DispatchInput): Promise<DispatchRespon
       if (
         error instanceof E2BUnavailableError
         || error instanceof MiniMaxUnavailableError
+        || error instanceof MiniMaxRequestError
         || error instanceof OpenAICompatUnavailableError
+        || error instanceof OpenAICompatRequestError
       ) {
         fallbackNote = {
           type: 'thinking_delta',

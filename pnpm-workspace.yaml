@@ -1,6 +1,16 @@
 packages:
   - .
 
+overrides:
+  esbuild: 0.25.12
+  postcss@<8.5.10: 8.5.15
+  uuid@<11.1.1: 11.1.1
+  vite: 6.4.3
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+
 allowBuilds:
-  esbuild: set this to true or false
-  sharp: set this to true or false
+  esbuild: true
+  sharp: true
