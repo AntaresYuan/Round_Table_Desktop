@@ -11,6 +11,7 @@ type AuthMode = 'signin' | 'signup';
 type AuthPageProps = {
   mode: AuthMode;
   callbackUrl?: string | undefined;
+  authError?: string | undefined;
 };
 
 const agents = [
@@ -20,12 +21,13 @@ const agents = [
   { src: '/avatars/beam.png', ring: '#5a9e8c', name: 'Beam' },
 ];
 
-export function AuthPage({ mode, callbackUrl = '/' }: AuthPageProps) {
+export function AuthPage({ mode, callbackUrl = '/', authError }: AuthPageProps) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [workspaceName, setWorkspaceName] = useState('Product Squad');
-  const [error, setError] = useState('');
+  const initialAuthError = useMemo(() => messageForAuthError(authError), [authError]);
+  const [error, setError] = useState(initialAuthError);
   const [pending, setPending] = useState(false);
   const [providers, setProviders] = useState<Record<string, { id: string; name: string }> | null>(null);
   const [pointer, setPointer] = useState({ x: 0, y: 0, active: false });
@@ -39,6 +41,10 @@ export function AuthPage({ mode, callbackUrl = '/' }: AuthPageProps) {
   }, [callbackUrl]);
   const hasGoogle = Boolean(providers?.google);
   const hasDev = Boolean(providers?.dev);
+
+  useEffect(() => {
+    setError(initialAuthError);
+  }, [initialAuthError]);
 
   useEffect(() => {
     getProviders()
@@ -62,7 +68,12 @@ export function AuthPage({ mode, callbackUrl = '/' }: AuthPageProps) {
       window.localStorage.setItem('roundtable.pendingWorkbenchName', workspaceName.trim() || 'Product Squad');
     }
     setPending(true);
-    await signIn('google', { callbackUrl: target });
+    try {
+      await signIn('google', { callbackUrl: target });
+    } catch {
+      setPending(false);
+      setError('Could not open Google sign-in. Please refresh and try again.');
+    }
   };
 
   const submitDev = async (event: FormEvent<HTMLFormElement>) => {
@@ -374,6 +385,26 @@ function GoogleMark() {
       <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4 5.5l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z" />
     </svg>
   );
+}
+
+function messageForAuthError(error: string | undefined): string {
+  if (!error) return '';
+  switch (error) {
+    case 'OAuthSignin':
+    case 'OAuthCallback':
+    case 'OAuthCreateAccount':
+    case 'OAuthAccountNotLinked':
+    case 'google':
+      return 'Google sign-in could not complete. Check the OAuth client and callback URL configuration.';
+    case 'AccessDenied':
+      return 'Google did not return a verified email for this account.';
+    case 'Configuration':
+      return 'Sign-in is not configured correctly for this deployment.';
+    case 'SessionRequired':
+      return 'Please sign in to continue.';
+    default:
+      return 'Sign-in failed. Please try again.';
+  }
 }
 
 const linkStyle = {

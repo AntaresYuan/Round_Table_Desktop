@@ -1,4 +1,8 @@
 import NextAuth from 'next-auth';
-import { authOptions } from '@/server/auth';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { applyDevelopmentAuthUrl, authOptions } from '@/server/auth';
 
-export default NextAuth(authOptions);
+export default function authHandler(req: NextApiRequest, res: NextApiResponse) {
+  applyDevelopmentAuthUrl(req);
+  return NextAuth(req, res, authOptions);
+}

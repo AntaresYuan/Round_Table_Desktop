@@ -4,8 +4,38 @@ import GoogleProvider from 'next-auth/providers/google';
 import { id, mutateData, nowIso } from './store.js';
 import type { Actor } from './types.js';
 
+type AuthUrlRequest = {
+  headers: {
+    host?: string | string[] | undefined;
+    'x-forwarded-proto'?: string | string[] | undefined;
+  };
+};
+
 export interface AuthSession extends Session {
   user: Actor;
+}
+
+function firstHeader(value: string | string[] | undefined): string | null {
+  if (Array.isArray(value)) return value[0]?.trim() || null;
+  return value?.trim() || null;
+}
+
+export function authUrlFromRequest(req: AuthUrlRequest): string | null {
+  const host = firstHeader(req.headers.host);
+  if (!host || /[/?#\\]/.test(host)) return null;
+  const forwardedProto = firstHeader(req.headers['x-forwarded-proto']);
+  const proto = forwardedProto === 'https' || forwardedProto === 'http'
+    ? forwardedProto
+    : host.startsWith('localhost') || host.startsWith('127.0.0.1')
+      ? 'http'
+      : 'https';
+  return `${proto}://${host}`;
+}
+
+export function applyDevelopmentAuthUrl(req: AuthUrlRequest): void {
+  if (process.env.NODE_ENV === 'production') return;
+  const requestUrl = authUrlFromRequest(req);
+  if (requestUrl) process.env.NEXTAUTH_URL = requestUrl;
 }
 
 export async function upsertUser(emailInput: string, nameInput?: string | null): Promise<Actor> {
