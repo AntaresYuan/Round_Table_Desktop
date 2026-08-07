@@ -88,6 +88,9 @@ function useScene(autoplay, speed) {
 /* ---- turn → sidebar task summary ----------------------------------------- */
 function turnToTask(turn) {
   const title = turn.message.length > 40 ? turn.message.slice(0, 40) + '...' : turn.message;
+  if (turn.serverConfirmed === false) {
+    return { id: turn.id, title, meta: turn.error || 'saving plan', status: 'live' };
+  }
   if (turn.status === 'error') {
     return { id: turn.id, title, meta: turn.error || 'failed', status: 'queued' };
   }
@@ -120,6 +123,7 @@ function storedTurnToLiveTurn(turn) {
   return {
     id: turn.id,
     chatId: turn.localChatId,
+    serverConfirmed: true,
     message: turn.message,
     status: turn.status,
     createdAt: turn.createdAt,
@@ -1104,7 +1108,7 @@ function App() {
     setSelectedLocalTurnId(id);
     setLocalStatus('pending');
     const chatId = chatIdOverride ?? localChatId;
-    setLocalTurns((turns) => [{ id, chatId, message, createdAt, status: 'pending' }, ...turns]);
+    setLocalTurns((turns) => [{ id, chatId, message, createdAt, status: 'pending', serverConfirmed: false }, ...turns]);
     try {
       const res = await fetch('/api/orchestrator/turn', {
         method: 'POST',
@@ -1122,7 +1126,7 @@ function App() {
         throw new Error(data.error || 'orchestrator_turn_failed');
       }
       setLocalTurns((turns) => turns.map((turn) => (
-        turn.id === id ? { ...turn, status: 'done', result: data } : turn
+        turn.id === id ? { ...turn, chatId: data.localChatId ?? chatId, serverConfirmed: true, status: 'done', result: data } : turn
       )));
       if (data.planningMeeting?.messages?.length) {
         setPlanningPlayback({ turnId: id, meetingMessageIndex: 0, meetingComplete: false });
@@ -1131,7 +1135,7 @@ function App() {
     } catch (error) {
       const errorText = error instanceof Error ? error.message : 'orchestrator_turn_failed';
       setLocalTurns((turns) => turns.map((turn) => (
-        turn.id === id ? { ...turn, status: 'error', error: errorText } : turn
+        turn.id === id ? { ...turn, serverConfirmed: false, status: 'error', error: errorText } : turn
       )));
       setLocalStatus('error');
     }

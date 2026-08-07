@@ -229,6 +229,7 @@ function LocalLiveTurn({ turn, agents, turnActions, showPreview }) {
               plan={turn.result.plan}
               intake={turn.result.intake}
               agents={agents}
+              serverConfirmed={turn.serverConfirmed === true}
               approvalStatus={turn.result.approvalStatus}
               approving={turn.approving}
               approvalError={turn.approvalError}
@@ -1015,7 +1016,7 @@ function TodoRow({ task, owner, record, status, last, dependencyLabels, cliNumbe
   );
 }
 
-function LocalPlanCard({ plan, intake, agents, approvalStatus, approving, approvalError, onApprove, dispatch, dispatchStatus }) {
+function LocalPlanCard({ plan, intake, agents, serverConfirmed, approvalStatus, approving, approvalError, onApprove, dispatch, dispatchStatus }) {
   const tasks = Array.isArray(plan?.tasks) ? plan.tasks : [];
   const safeIntake = intake || { intentType: 'build', risk: 'medium', clarity: 'medium' };
   const ownerFor = (task) => {
@@ -1026,6 +1027,7 @@ function LocalPlanCard({ plan, intake, agents, approvalStatus, approving, approv
   };
   const dependencyLabels = new Map(tasks.map((task) => [task.id, conciseTaskTitle(task, ownerFor(task))]));
   const approved = approvalStatus === 'approved';
+  const waitingForSave = !serverConfirmed;
   const recordFor = (taskId) => (dispatch || []).find((r) => r.taskId === taskId);
   const doneCount = tasks.filter((t) =>
     todoStatusFor(t, recordFor(t.id), approved, dispatchStatus) === 'completed').length;
@@ -1050,16 +1052,27 @@ function LocalPlanCard({ plan, intake, agents, approvalStatus, approving, approv
           {approved ? 'approved' : 'awaiting approval'}
         </span>
         {!approved && (
-          <button onClick={onApprove} disabled={approving} title="Approve this plan and start the agents"
+          <button onClick={onApprove} disabled={approving || waitingForSave}
+            title={waitingForSave ? 'Waiting for the plan to be saved before agents can start' : 'Approve this plan and start the agents'}
             style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
               padding: '7px 13px', borderRadius: 'var(--r-sm)', border: 'none',
-              cursor: approving ? 'default' : 'pointer', background: approving ? 'var(--surface-3)' : 'var(--accent)',
-              color: approving ? 'var(--text-faint)' : '#fff', font: 'inherit', fontSize: 12.5,
+              cursor: approving || waitingForSave ? 'default' : 'pointer', background: approving || waitingForSave ? 'var(--surface-3)' : 'var(--accent)',
+              color: approving || waitingForSave ? 'var(--text-faint)' : '#fff', font: 'inherit', fontSize: 12.5,
               fontWeight: 700, minHeight: 30, flexShrink: 0 }}>
-            {approving ? <><Spinner size={13} color="var(--text-faint)" /> Starting…</> : <><Icon name="play" size={13} /> Start building</>}
+            {approving
+              ? <><Spinner size={13} color="var(--text-faint)" /> Starting…</>
+              : waitingForSave
+                ? <><Spinner size={13} color="var(--text-faint)" /> Saving plan…</>
+                : <><Icon name="play" size={13} /> Start building</>}
           </button>
         )}
       </div>
+      {waitingForSave && (
+        <div style={{ padding: '8px 14px', background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 12.5,
+          borderBottom: '1px solid var(--border)' }}>
+          Saving this plan before agent execution starts.
+        </div>
+      )}
       {approvalError && (
         <div style={{ padding: '8px 14px', background: alpha('var(--bad)', 10), color: 'var(--bad)', fontSize: 12.5,
           borderBottom: '1px solid var(--border)' }}>
