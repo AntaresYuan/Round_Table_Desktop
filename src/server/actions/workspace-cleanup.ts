@@ -1,5 +1,6 @@
 import { rm } from 'node:fs/promises';
 import { join, resolve, sep } from 'node:path';
+import { managedWorkspaceRoot } from './workbench-actions.js';
 
 /* ============================================================================
    workspace-cleanup.ts — delete a run's workspace when its session is deleted.
@@ -17,7 +18,7 @@ import { join, resolve, sep } from 'node:path';
 
 export async function removeWorkspace(workspacePath: string | null | undefined): Promise<void> {
   if (!workspacePath) return;
-  const root = resolve(process.env.ROUNDTABLE_WORKSPACE_ROOT || '.roundtable/workspaces');
+  const root = managedWorkspaceRoot();
   const target = resolve(workspacePath);
   const managed = target !== root && target.startsWith(root + sep);
   try {

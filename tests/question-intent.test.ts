@@ -10,6 +10,7 @@ import { approveTurn, createTurn } from '../src/server/actions/turn-actions.js';
 import {
   createWorkbench,
   isForbiddenWorkspace,
+  managedWorkspaceRoot,
   workspacePathForWorkbench,
 } from '../src/server/actions/workbench-actions.js';
 import { resetData } from '../src/server/store.js';
@@ -32,6 +33,7 @@ afterEach(async () => {
   delete process.env.ROUNDTABLE_WORKSPACE_ROOT;
   delete process.env.ROUNDTABLE_AGENT_ADAPTER;
   delete process.env.ROUNDTABLE_CLARIFY_ENABLED;
+  delete process.env.VERCEL;
   await rm(tempDir, { recursive: true, force: true });
 });
 
@@ -170,5 +172,18 @@ describe('workspace guard — the app source tree is never a workspace', () => {
   it('falls back to the managed path when a workbench requests the app root', () => {
     const resolved = workspacePathForWorkbench('owner-1', 'wb-1', process.cwd());
     expect(resolved).toBe(join(tempDir, 'workspaces', 'owner-1', 'wb-1'));
+  });
+
+  it('uses /tmp for managed workspaces on Vercel when no root is configured', () => {
+    delete process.env.ROUNDTABLE_WORKSPACE_ROOT;
+    process.env.VERCEL = '1';
+    try {
+      expect(managedWorkspaceRoot()).toBe(join(tmpdir(), 'roundtable', 'workspaces'));
+      expect(workspacePathForWorkbench('owner-1', 'wb-1', process.cwd()))
+        .toBe(join(tmpdir(), 'roundtable', 'workspaces', 'owner-1', 'wb-1'));
+    } finally {
+      delete process.env.VERCEL;
+      process.env.ROUNDTABLE_WORKSPACE_ROOT = join(tempDir, 'workspaces');
+    }
   });
 });

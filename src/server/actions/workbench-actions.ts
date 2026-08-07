@@ -1,3 +1,4 @@
+import { tmpdir } from 'node:os';
 import { isAbsolute, relative, resolve } from 'node:path';
 import { id, mutateData, nowIso, readData } from '../store.js';
 import type { Actor, Workbench } from '../types.js';
@@ -47,7 +48,7 @@ export function workspacePathForWorkbench(ownerId: string, workbenchId: string, 
 export function storedWorkspacePath(workbench: Workbench): string {
   const resolved = resolve(workbench.workspacePath);
   if (isForbiddenWorkspace(resolved)) return defaultWorkspacePath(workbench.ownerId, workbench.id);
-  if (customWorkspacePathsAllowed() || isPathInside(workspaceRoot(), resolved)) return resolved;
+  if (customWorkspacePathsAllowed() || isPathInside(managedWorkspaceRoot(), resolved)) return resolved;
   return defaultWorkspacePath(workbench.ownerId, workbench.id);
 }
 
@@ -64,11 +65,14 @@ export function isForbiddenWorkspace(target: string): boolean {
 }
 
 function defaultWorkspacePath(ownerId: string, workbenchId: string): string {
-  return resolve(workspaceRoot(), ownerId, workbenchId);
+  return resolve(managedWorkspaceRoot(), ownerId, workbenchId);
 }
 
-function workspaceRoot(): string {
-  return resolve(process.env.ROUNDTABLE_WORKSPACE_ROOT || '.roundtable/workspaces');
+export function managedWorkspaceRoot(): string {
+  const configured = process.env.ROUNDTABLE_WORKSPACE_ROOT?.trim();
+  if (configured) return resolve(configured);
+  if (process.env.VERCEL === '1') return resolve(tmpdir(), 'roundtable', 'workspaces');
+  return resolve('.roundtable/workspaces');
 }
 
 function customWorkspacePathsAllowed(): boolean {

@@ -2,7 +2,7 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { readData } from '../../store.js';
 import type { LocalTurn } from '../../types.js';
-import { storedWorkspacePath } from '../workbench-actions.js';
+import { managedWorkspaceRoot, storedWorkspacePath } from '../workbench-actions.js';
 
 export async function prepareWorkspace(turn: LocalTurn): Promise<string> {
   const projectWorkspace = await workspaceFromChat(turn.localChatId);
@@ -11,7 +11,7 @@ export async function prepareWorkspace(turn: LocalTurn): Promise<string> {
     await clearRunOutput(projectWorkspace);
     return projectWorkspace;
   }
-  const root = resolve(process.env.ROUNDTABLE_WORKSPACE_ROOT || '.roundtable/workspaces');
+  const root = managedWorkspaceRoot();
   const workspace = resolve(root, turn.localChatId ?? turn.id);
   await mkdir(workspace, { recursive: true });
   await clearRunOutput(workspace);
@@ -42,7 +42,7 @@ export async function workspacePathForChat(chatId: string | null): Promise<strin
   if (!chatId) return null;
   const projectWorkspace = await workspaceFromChat(chatId);
   if (projectWorkspace) return projectWorkspace;
-  const root = resolve(process.env.ROUNDTABLE_WORKSPACE_ROOT || '.roundtable/workspaces');
+  const root = managedWorkspaceRoot();
   return resolve(root, chatId);
 }
 
