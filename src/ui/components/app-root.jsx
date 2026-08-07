@@ -1169,10 +1169,8 @@ function App() {
     }
   };
   const approveLocalTurn = async (turnId) => {
-    setLocalTurns((turns) => turns.map((turn) => (
-      turn.id === turnId ? { ...turn, approving: true, approvalError: null } : turn
-    )));
-    try {
+    const currentTurn = localTurns.find((turn) => turn.id === turnId);
+    const requestApproval = async () => {
       const res = await fetch('/api/orchestrator/approval', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1187,6 +1185,13 @@ function App() {
       if (!res.ok || !data.ok) {
         throw new Error(data.error || 'approval_failed');
       }
+      return data;
+    };
+    setLocalTurns((turns) => turns.map((turn) => (
+      turn.id === turnId ? { ...turn, approving: true, approvalError: null } : turn
+    )));
+    try {
+      const data = await requestApproval();
       setLocalTurns((turns) => turns.map((turn) => (
         turn.id === turnId
           ? {
@@ -1214,6 +1219,63 @@ function App() {
       )));
     } catch (error) {
       const errorText = error instanceof Error ? error.message : 'approval_failed';
+      if (errorText === 'turn_not_found' && currentTurn?.message) {
+        try {
+          const rebuildRes = await fetch('/api/orchestrator/turn', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              message: currentTurn.message,
+              turnId,
+              chatId: currentTurn.chatId ?? activeChatId ?? localChatId,
+              ...(currentTurn.result?.workflowTemplateId ? { workflowTemplateId: currentTurn.result.workflowTemplateId } : {}),
+              ...preferredAgentAdapterRequest(),
+            }),
+          });
+          const rebuilt = await rebuildRes.json();
+          if (!rebuildRes.ok || !rebuilt.ok) {
+            throw new Error(rebuilt.error || 'turn_rebuild_failed');
+          }
+          setLocalTurns((turns) => turns.map((turn) => (
+            turn.id === turnId
+              ? { ...turn, chatId: rebuilt.localChatId ?? turn.chatId, status: 'done', result: rebuilt }
+              : turn
+          )));
+          const data = await requestApproval();
+          setLocalTurns((turns) => turns.map((turn) => (
+            turn.id === turnId
+              ? {
+                  ...turn,
+                  approving: false,
+                  approvalError: null,
+                  result: {
+                    ...(turn.result ?? rebuilt),
+                    needsApproval: data.needsApproval,
+                    approvalStatus: data.approvalStatus,
+                    approvedAt: data.approvedAt,
+                    dispatchStatus: data.dispatchStatus,
+                    dispatchAdapter: data.dispatchAdapter,
+                    dispatchedAt: data.dispatchedAt,
+                    dispatchStage: data.dispatchStage,
+                    dispatchError: data.dispatchError,
+                    dispatchWorkspacePath: data.workspacePath,
+                    dispatch: data.records,
+                    artifacts: data.artifacts,
+                    mission: data.mission,
+                    ...(data.workflowRun ? { workflowRun: data.workflowRun } : {}),
+                  },
+                }
+              : turn
+          )));
+          return;
+        } catch (rebuildError) {
+          const rebuildErrorText = rebuildError instanceof Error ? rebuildError.message : 'turn_rebuild_failed';
+          setLocalTurns((turns) => turns.map((turn) => (
+            turn.id === turnId ? { ...turn, approving: false, approvalError: rebuildErrorText } : turn
+          )));
+          return;
+        }
+      }
       setLocalTurns((turns) => turns.map((turn) => (
         turn.id === turnId ? { ...turn, approving: false, approvalError: errorText } : turn
       )));
