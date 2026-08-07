@@ -120,11 +120,25 @@ export async function approveTurn(input: ApprovalInput): Promise<DispatchRespons
       }), input);
       void dispatchTurn({ turnId: next.id, agentAdapter: input.agentAdapter, actor: input.actor }).catch(async (error) => {
         const message = error instanceof Error ? error.message : 'dispatch_failed';
+        const failed = await updateTurn(next.id, (current) => {
+          const failedTurn = {
+            ...current,
+            dispatchStatus: 'failed' as const,
+            dispatchStage: 'failed',
+            dispatchError: message,
+          };
+          return {
+            ...failedTurn,
+            workflowRun: workflowRunForTurn(failedTurn),
+          };
+        }, input).catch(() => null);
+        const failedTurn = failed ? requireTurn(failed) : null;
+        if (!failedTurn) return;
+        const failedMission = await updateMissionForDispatch(failedTurn).catch(() => null);
         await updateTurn(next.id, (current) => ({
           ...current,
-          dispatchStatus: 'failed',
-          dispatchStage: 'failed',
-          dispatchError: message,
+          mission: failedMission ?? current.mission,
+          workflowRun: workflowRunForTurn({ ...current, mission: failedMission ?? current.mission }),
         }), input).catch(() => {});
       });
       return dispatchResponse(requireTurn(runningSynced));

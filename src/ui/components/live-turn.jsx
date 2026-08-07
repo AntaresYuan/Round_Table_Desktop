@@ -246,6 +246,7 @@ function LocalLiveTurn({ turn, agents, turnActions, showPreview }) {
                 agents={agents}
                 dispatchStatus={turn.result.dispatchStatus}
                 dispatchAdapter={turn.result.dispatchAdapter}
+                dispatchError={turn.result.dispatchError}
                 workspacePath={turn.result.dispatchWorkspacePath || turn.result.workspacePath}
                 liveActivity={turn.result.dispatchStatus === 'running' ? turn.result.liveActivity : null}
               />
@@ -283,6 +284,7 @@ function LocalLiveTurn({ turn, agents, turnActions, showPreview }) {
                   dispatchStatus={turn.result.dispatchStatus}
                   dispatchAdapter={turn.result.dispatchAdapter}
                   dispatchStage={turn.result.dispatchStage}
+                  dispatchError={turn.result.dispatchError}
                   workspacePath={turn.result.dispatchWorkspacePath || turn.result.workspacePath}
                   previewArtifact={showPreview && !interrupted ? previewArtifact : null}
                   agents={agents}
@@ -658,7 +660,7 @@ function StageCards({ workflow, workflowRun, artifacts, agents, dispatchStatus, 
   );
 }
 
-function AgentChainCard({ plan, records, artifacts, agents, dispatchStatus, dispatchAdapter, workspacePath, liveActivity }) {
+function AgentChainCard({ plan, records, artifacts, agents, dispatchStatus, dispatchAdapter, dispatchError, workspacePath, liveActivity }) {
   const tasks = Array.isArray(plan?.tasks) ? plan.tasks : [];
   const taskById = new Map(tasks.map((task) => [task.id, task]));
   const visibleRecords = Array.isArray(records) ? records : [];
@@ -708,7 +710,9 @@ function AgentChainCard({ plan, records, artifacts, agents, dispatchStatus, disp
       )}
       {visibleRecords.length === 0 ? (
         liveEntries.length === 0 && (
-          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Waiting for the first agent output.</div>
+          dispatchStatus === 'failed' && dispatchError
+            ? <div className="mono" style={{ fontSize: 12.5, color: 'var(--bad)' }}>{dispatchError}</div>
+            : <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Waiting for the first agent output.</div>
         )
       ) : visibleRecords.map((record) => {
         const task = taskById.get(record.taskId);
@@ -806,7 +810,7 @@ function ExpandableArtifact({ artifact, owner }) {
   );
 }
 
-function LocalResultCard({ artifacts, dispatchStatus, dispatchAdapter, dispatchStage, workspacePath, previewArtifact, agents, mission, onDecideDelivery }) {
+function LocalResultCard({ artifacts, dispatchStatus, dispatchAdapter, dispatchStage, dispatchError, workspacePath, previewArtifact, agents, mission, onDecideDelivery }) {
   const completed = dispatchStatus === 'completed';
   const codeCount = artifacts.filter((artifact) => artifact.kind === 'code').length;
   const reviewCount = artifacts.filter((artifact) => artifact.ownerAgentId === 'reviewer').length;
@@ -863,6 +867,19 @@ function LocalResultCard({ artifacts, dispatchStatus, dispatchAdapter, dispatchS
           background: alpha(accepted ? 'var(--ok)' : 'var(--warn)', 10), color: accepted ? 'var(--ok)' : 'var(--warn)',
           fontSize: 12.5, fontWeight: 750 }}>
           {accepted ? 'Final delivery accepted.' : 'Repair requested for final delivery.'}
+        </div>
+      )}
+      {dispatchStatus === 'failed' && dispatchError && (
+        <div className="mono" style={{
+          padding: '10px 14px',
+          borderBottom: '1px solid var(--border)',
+          color: 'var(--bad)',
+          background: 'color-mix(in oklab, var(--bad) 8%, var(--surface))',
+          fontSize: 11.5,
+          lineHeight: 1.45,
+          overflowWrap: 'anywhere',
+        }}>
+          {dispatchError}
         </div>
       )}
       {previewArtifact && (

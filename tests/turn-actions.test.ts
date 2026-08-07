@@ -13,7 +13,7 @@ import {
 } from '../src/server/actions/turn-actions.js';
 import { saveAgentRuntimeConfig } from '../src/server/actions/runtime-actions.js';
 import { createWorkbench } from '../src/server/actions/workbench-actions.js';
-import { resetData } from '../src/server/store.js';
+import { mutateData, resetData } from '../src/server/store.js';
 import type { Actor } from '../src/server/types.js';
 
 let tempDir = '';
@@ -162,6 +162,42 @@ describe('dispatchTurn — DAG scheduler integration', () => {
 
     expect(result.dispatchStatus).toBe('completed');
     expect(result.dispatchAdapter).toBe('local-dispatch');
+  });
+
+  it('persists background dispatch startup errors instead of leaving an empty waiting run', async () => {
+    const turn = await createTurn({ actor, message: 'Build a waitlist page and review it.' });
+    await mutateData((data) => {
+      data.turns = data.turns.map((item) => item.id === turn.id
+        ? {
+            ...item,
+            plan: {
+              ...item.plan,
+              tasks: item.plan.tasks.map((task, index) =>
+                index === 0 ? { ...task, deps: ['missing_task'] } : task,
+              ),
+            },
+          }
+        : item);
+    });
+
+    const approved = await approveTurn({
+      actor,
+      turnId: turn.id,
+      decision: 'approve',
+      autoDispatch: true,
+      agentAdapter: 'local-dispatch',
+      background: true,
+    });
+
+    expect(approved.dispatchStatus).toBe('running');
+    const failed = await waitForTurn(turn.id, (item) =>
+      item?.dispatchStatus === 'failed' && item.mission?.status === 'failed',
+    );
+
+    expect(failed.dispatchError).toContain('unknown_dep');
+    expect(failed.dispatch).toEqual([]);
+    expect(failed.mission?.status).toBe('failed');
+    expect(failed.workflowRun?.stageStates.ship?.status).toBe('blocked');
   });
 
   it('falls back to local dispatch when an OpenAI-compatible provider request fails', async () => {
@@ -323,4 +359,16 @@ function setNodeEnv(value: string | undefined): void {
   const env = process.env as Record<string, string | undefined>;
   if (value === undefined) delete env.NODE_ENV;
   else env.NODE_ENV = value;
+}
+
+async function waitForTurn(
+  turnId: string,
+  predicate: (turn: Awaited<ReturnType<typeof getTurn>>) => boolean,
+): Promise<NonNullable<Awaited<ReturnType<typeof getTurn>>>> {
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    const turn = await getTurn(turnId, { actor });
+    if (turn && predicate(turn)) return turn;
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+  throw new Error('timed_out_waiting_for_turn');
 }
