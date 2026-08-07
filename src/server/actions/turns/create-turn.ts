@@ -114,6 +114,24 @@ export async function createTurn(input: CreateTurnInput): Promise<TurnResponse> 
     template,
     workingStyle,
   });
+  // Persist before the planning meeting runs. The meeting can take long enough
+  // for the user to refresh or navigate away; history must still be able to
+  // restore the in-progress turn instead of losing the current task.
+  const pendingTurn: LocalTurn = {
+    ...draftTurn,
+    status: 'pending',
+    pmMessage: 'Planning meeting in progress.',
+    dispatchStage: 'planning',
+    workflowRun: workflowRunForTurn({
+      ...draftTurn,
+      status: 'pending',
+      pmMessage: 'Planning meeting in progress.',
+      dispatchStage: 'planning',
+    }),
+  };
+  await mutateData((data) => {
+    data.turns = [pendingTurn, ...data.turns.filter((item) => item.id !== turnId)];
+  });
   const turn = await attachPlanningMeeting(draftTurn, message);
   const mission = await createMission({
     actor: input.actor,

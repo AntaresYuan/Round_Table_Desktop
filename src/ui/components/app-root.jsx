@@ -120,47 +120,48 @@ function turnToTask(turn) {
 }
 
 function storedTurnToLiveTurn(turn) {
-  return {
+  const base = {
     id: turn.id,
     chatId: turn.localChatId,
     serverConfirmed: true,
     message: turn.message,
     status: turn.status,
     createdAt: turn.createdAt,
-    ...(turn.status === 'done'
-      ? {
-          result: {
-            ok: true,
-            id: turn.id,
-            missionId: turn.missionId,
-            workflowTemplateId: turn.workflowTemplateId,
-            provider: turn.provider,
-            model: turn.model,
-            pmMessage: turn.pmMessage,
-            needsApproval: turn.needsApproval,
-            approvalStatus: turn.approvalStatus,
-            approvedAt: turn.approvedAt,
-            dispatchStatus: turn.dispatchStatus,
-            dispatchAdapter: turn.dispatchAdapter,
-            dispatchedAt: turn.dispatchedAt,
-            dispatchStage: turn.dispatchStage,
-            dispatchError: turn.dispatchError,
-            dispatchWorkspacePath: turn.dispatchWorkspacePath,
-            dispatch: turn.dispatch,
-            artifacts: turn.artifacts,
-            intake: turn.intake,
-            plan: turn.plan,
-            planningMeeting: turn.planningMeeting || null,
-            workflow: turn.workflow,
-            workflowRun: turn.workflowRun,
-            mission: turn.mission,
-            needsClarification: turn.needsClarification,
-            clarifyQuestions: turn.clarifyQuestions,
-            clarifyAnswers: turn.clarifyAnswers,
-            liveActivity: turn.liveActivity,
-          },
-        }
-      : { error: turn.error || 'orchestrator_turn_failed' }),
+  };
+  if (turn.status === 'error') return { ...base, error: turn.error || 'orchestrator_turn_failed' };
+  if (turn.status !== 'done') return base;
+  return {
+    ...base,
+    result: {
+      ok: true,
+      id: turn.id,
+      missionId: turn.missionId,
+      workflowTemplateId: turn.workflowTemplateId,
+      provider: turn.provider,
+      model: turn.model,
+      pmMessage: turn.pmMessage,
+      needsApproval: turn.needsApproval,
+      approvalStatus: turn.approvalStatus,
+      approvedAt: turn.approvedAt,
+      dispatchStatus: turn.dispatchStatus,
+      dispatchAdapter: turn.dispatchAdapter,
+      dispatchedAt: turn.dispatchedAt,
+      dispatchStage: turn.dispatchStage,
+      dispatchError: turn.dispatchError,
+      dispatchWorkspacePath: turn.dispatchWorkspacePath,
+      dispatch: turn.dispatch,
+      artifacts: turn.artifacts,
+      intake: turn.intake,
+      plan: turn.plan,
+      planningMeeting: turn.planningMeeting || null,
+      workflow: turn.workflow,
+      workflowRun: turn.workflowRun,
+      mission: turn.mission,
+      needsClarification: turn.needsClarification,
+      clarifyQuestions: turn.clarifyQuestions,
+      clarifyAnswers: turn.clarifyAnswers,
+      liveActivity: turn.liveActivity,
+    },
   };
 }
 
