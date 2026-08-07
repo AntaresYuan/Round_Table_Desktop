@@ -1100,6 +1100,16 @@ function App() {
     setSelectedWorkbenchId(created.id);
     return created;
   };
+  const createChatForTurn = async (message) => {
+    const workbench = await ensureWorkbench();
+    const chat = await createChat.mutateAsync({ title: message.slice(0, 160), workbenchId: workbench.id });
+    if (chat) {
+      setSelectedChatId(chat.id);
+      setSelectedWorkbenchId(chat.workbenchId);
+      await createMessage.mutateAsync({ chatId: chat.id, content: message });
+    }
+    return chat;
+  };
   const sendLocalTurn = async (message, turnId, chatIdOverride, workflowTemplateId) => {
     const id = turnId || randomClientId('live');
     const createdAt = new Date().toISOString();
@@ -1107,16 +1117,16 @@ function App() {
     setNotesOpen(true);
     setSelectedLocalTurnId(id);
     setLocalStatus('pending');
-    const chatId = chatIdOverride ?? localChatId;
+    let chatId = chatIdOverride ?? (authed ? activeChatId : localChatId);
     setLocalTurns((turns) => [{ id, chatId, message, createdAt, status: 'pending', serverConfirmed: false }, ...turns]);
-    try {
+    const postTurn = async (nextChatId) => {
       const res = await fetch('/api/orchestrator/turn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message,
           turnId: id,
-          chatId,
+          chatId: nextChatId,
           ...(workflowTemplateId ? { workflowTemplateId } : {}),
           ...preferredAgentAdapterRequest(),
         }),
@@ -1125,6 +1135,15 @@ function App() {
       if (!res.ok || !data.ok) {
         throw new Error(data.error || 'orchestrator_turn_failed');
       }
+      return data;
+    };
+    try {
+      if (authed && !chatId) {
+        const chat = await createChatForTurn(message);
+        if (!chat) throw new Error('chat_create_failed');
+        chatId = chat.id;
+      }
+      const data = await postTurn(chatId);
       setLocalTurns((turns) => turns.map((turn) => (
         turn.id === id ? { ...turn, chatId: data.localChatId ?? chatId, serverConfirmed: true, status: 'done', result: data } : turn
       )));
@@ -1134,6 +1153,32 @@ function App() {
       setLocalStatus('idle');
     } catch (error) {
       const errorText = error instanceof Error ? error.message : 'orchestrator_turn_failed';
+      if (authed && errorText === 'chat_not_found') {
+        try {
+          const chat = await createChatForTurn(message);
+          if (!chat) throw new Error('chat_create_failed');
+          chatId = chat.id;
+          setLocalTurns((turns) => turns.map((turn) => (
+            turn.id === id ? { ...turn, chatId, status: 'pending', error: null } : turn
+          )));
+          const data = await postTurn(chatId);
+          setLocalTurns((turns) => turns.map((turn) => (
+            turn.id === id ? { ...turn, chatId: data.localChatId ?? chatId, serverConfirmed: true, status: 'done', result: data } : turn
+          )));
+          if (data.planningMeeting?.messages?.length) {
+            setPlanningPlayback({ turnId: id, meetingMessageIndex: 0, meetingComplete: false });
+          }
+          setLocalStatus('idle');
+          return;
+        } catch (retryError) {
+          const retryErrorText = retryError instanceof Error ? retryError.message : 'orchestrator_turn_failed';
+          setLocalTurns((turns) => turns.map((turn) => (
+            turn.id === id ? { ...turn, serverConfirmed: false, status: 'error', error: retryErrorText } : turn
+          )));
+          setLocalStatus('error');
+          return;
+        }
+      }
       setLocalTurns((turns) => turns.map((turn) => (
         turn.id === id ? { ...turn, serverConfirmed: false, status: 'error', error: errorText } : turn
       )));
