@@ -1444,13 +1444,21 @@ function App() {
   const sendComposerMessage = async (message, workflowTemplateId) => {
     if (authed) {
       if (activeChatId) {
-        createMessage.mutate({ chatId: activeChatId, content: message });
-        sendLocalTurn(message, undefined, activeChatId, workflowTemplateId);
+        try {
+          await createMessage.mutateAsync({ chatId: activeChatId, content: message });
+          sendLocalTurn(message, undefined, activeChatId, workflowTemplateId);
+        } catch (error) {
+          const errorText = error instanceof Error ? error.message : '';
+          if (errorText.includes('chat_not_found')) {
+            setSelectedChatId(null);
+            sendLocalTurn(message, undefined, undefined, workflowTemplateId);
+            return;
+          }
+          throw error;
+        }
       } else {
-        const workbench = await ensureWorkbench();
-        const chat = await createChat.mutateAsync({ title: message.slice(0, 160), workbenchId: workbench.id });
+        const chat = await createChatForTurn(message);
         if (chat) {
-          await createMessage.mutateAsync({ chatId: chat.id, content: message });
           sendLocalTurn(message, undefined, chat.id, workflowTemplateId);
         }
       }
