@@ -119,6 +119,7 @@ function turnToTask(turn) {
 function storedTurnToLiveTurn(turn) {
   return {
     id: turn.id,
+    chatId: turn.localChatId,
     message: turn.message,
     status: turn.status,
     createdAt: turn.createdAt,
@@ -172,6 +173,25 @@ function randomClientId(prefix) {
   const uuid = globalThis.crypto?.randomUUID?.().replace(/-/g, '');
   const fallback = `${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`;
   return `${prefix}-${(uuid || fallback).slice(0, 16)}`;
+}
+
+function readSavedUiId(key) {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage.getItem(key) || null;
+  } catch {
+    return null;
+  }
+}
+
+function writeSavedUiId(key, value) {
+  if (typeof window === 'undefined') return;
+  try {
+    if (value) window.localStorage.setItem(key, value);
+    else window.localStorage.removeItem(key);
+  } catch {
+    // Persisted UI selection is a convenience; the app still works without it.
+  }
 }
 
 // #15 AC: agent color persistence across sessions. Custom agents (id `a-…`)
@@ -666,8 +686,8 @@ function App() {
   }, []);
   const chatsQ = trpc.chats.list.useQuery(undefined, { enabled: authed });
   const workbenchesQ = trpc.workbenches.list.useQuery(undefined, { enabled: authed });
-  const [selectedChatId, setSelectedChatId] = useState(null);
-  const [selectedWorkbenchId, setSelectedWorkbenchId] = useState(null);
+  const [selectedChatId, setSelectedChatId] = useState(() => readSavedUiId('roundtable.selectedChatId'));
+  const [selectedWorkbenchId, setSelectedWorkbenchId] = useState(() => readSavedUiId('roundtable.selectedWorkbenchId'));
   const [selectedLocalTurnId, setSelectedLocalTurnId] = useState(null);
   const trpcUtils = trpc.useUtils();
   const createWorkbench = trpc.workbenches.create.useMutation({
@@ -725,13 +745,16 @@ function App() {
       },
     });
   }, [authed, workbenchesQ.isSuccess, liveWorkbenches.length, createWorkbench]);
-  const activeChat =
+  const selectedChat =
     authed && chatsQ.data && selectedChatId
-      ? chatsQ.data.find((c) => c.id === selectedChatId)
+      ? chatsQ.data.find((c) => c.id === selectedChatId) ?? null
       : null;
+  const activeChat = selectedChat;
   const firstWorkbenchId = liveWorkbenches[0]?.id ?? null;
-  const activeWorkbenchId = selectedWorkbenchId ?? activeChat?.workbenchId ?? firstWorkbenchId;
-  const activeChatId = selectedChatId
+  const selectedWorkbenchExists = !selectedWorkbenchId
+    || liveWorkbenches.some((workbench) => workbench.id === selectedWorkbenchId);
+  const activeWorkbenchId = (selectedWorkbenchExists ? selectedWorkbenchId : null) ?? activeChat?.workbenchId ?? firstWorkbenchId;
+  const activeChatId = selectedChat?.id
     ?? ((authed && chatsQ.data?.find((c) => c.workbenchId === activeWorkbenchId)?.id) || null);
   const activeWorkbench =
     authed && activeWorkbenchId
@@ -830,6 +853,20 @@ function App() {
     addWorkbenchPin,
     removeWorkbenchPin,
   ]);
+  useEffect(() => {
+    writeSavedUiId('roundtable.selectedChatId', selectedChatId);
+  }, [selectedChatId]);
+  useEffect(() => {
+    writeSavedUiId('roundtable.selectedWorkbenchId', selectedWorkbenchId);
+  }, [selectedWorkbenchId]);
+  useEffect(() => {
+    if (!authed || !chatsQ.data || !selectedChatId) return;
+    if (!chatsQ.data.some((chat) => chat.id === selectedChatId)) setSelectedChatId(null);
+  }, [authed, chatsQ.data, selectedChatId]);
+  useEffect(() => {
+    if (!authed || !workbenchesQ.data || !selectedWorkbenchId) return;
+    if (!workbenchesQ.data.some((workbench) => workbench.id === selectedWorkbenchId)) setSelectedWorkbenchId(null);
+  }, [authed, workbenchesQ.data, selectedWorkbenchId]);
   const agents = useMemo(() => palettize(t.palette), [t.palette, memberIds]);
   const railWorkbench = authed && activeWorkbench
     ? { ...activeWorkbench, members: RT.WORKBENCH.members }
@@ -957,7 +994,20 @@ function App() {
       if (!res.ok || !data.ok) return;
       const storedTurns = data.turns || [];
       const turns = storedTurns.map(storedTurnToLiveTurn);
-      setLocalTurns(turns);
+      setLocalTurns((current) => {
+        const storedIds = new Set(turns.map((turn) => turn.id));
+        const keepPending = current.filter((turn) => (
+          turn.chatId === turnChatId
+          && !storedIds.has(turn.id)
+          && (
+            turn.status === 'pending'
+            || turn.approving
+            || turn.clarifying
+            || turn.result?.dispatchStatus === 'running'
+          )
+        ));
+        return [...keepPending, ...turns];
+      });
       setSelectedLocalTurnId((current) => (
         current && turns.some((turn) => turn.id === current)
           ? current
@@ -1053,7 +1103,8 @@ function App() {
     setNotesOpen(true);
     setSelectedLocalTurnId(id);
     setLocalStatus('pending');
-    setLocalTurns((turns) => [{ id, message, createdAt, status: 'pending' }, ...turns]);
+    const chatId = chatIdOverride ?? localChatId;
+    setLocalTurns((turns) => [{ id, chatId, message, createdAt, status: 'pending' }, ...turns]);
     try {
       const res = await fetch('/api/orchestrator/turn', {
         method: 'POST',
@@ -1061,7 +1112,7 @@ function App() {
         body: JSON.stringify({
           message,
           turnId: id,
-          chatId: chatIdOverride ?? localChatId,
+          chatId,
           ...(workflowTemplateId ? { workflowTemplateId } : {}),
           ...preferredAgentAdapterRequest(),
         }),
