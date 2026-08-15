@@ -4,6 +4,7 @@ import { dirname, resolve } from 'node:path';
 import pg from 'pg';
 import type { Pool as PgPool, PoolClient, PoolConfig } from 'pg';
 import type {
+  A2ATaskBinding,
   Artifact,
   AgentRuntimeConfig,
   AgentRuntimeConversation,
@@ -38,6 +39,7 @@ export type RoundtableData = {
   agentRuntimeConfigs: AgentRuntimeConfig[];
   agentRuntimeDefaults: AgentRuntimeDefaultConfig[];
   agentRuntimeConversations: AgentRuntimeConversation[];
+  a2aTaskBindings: A2ATaskBinding[];
   settings: RoundtableSettings;
 };
 
@@ -476,6 +478,21 @@ const NORMALIZED_TABLE_STATEMENTS = [
     updated_at timestamptz NOT NULL DEFAULT now(),
     PRIMARY KEY (store_key, id)
   )`,
+  `CREATE TABLE IF NOT EXISTS roundtable_a2a_task_bindings (
+    store_key text NOT NULL,
+    id text NOT NULL,
+    mission_id text NOT NULL,
+    turn_id text NOT NULL,
+    plan_task_id text NOT NULL,
+    agent_id text NOT NULL,
+    remote_task_id text NOT NULL,
+    state text NOT NULL,
+    created_at timestamptz NOT NULL,
+    record_updated_at timestamptz NOT NULL,
+    data jsonb NOT NULL,
+    updated_at timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (store_key, id)
+  )`,
   `CREATE TABLE IF NOT EXISTS roundtable_settings (
     store_key text NOT NULL,
     id text NOT NULL,
@@ -502,6 +519,7 @@ const NORMALIZED_INDEX_STATEMENTS = [
   'CREATE INDEX IF NOT EXISTS roundtable_missions_chat_created_idx ON roundtable_missions (store_key, chat_id, created_at)',
   'CREATE INDEX IF NOT EXISTS roundtable_missions_status_idx ON roundtable_missions (store_key, status)',
   'CREATE INDEX IF NOT EXISTS roundtable_agent_runtime_conversations_turn_idx ON roundtable_agent_runtime_conversations (store_key, turn_id)',
+  'CREATE INDEX IF NOT EXISTS roundtable_a2a_task_bindings_turn_idx ON roundtable_a2a_task_bindings (store_key, turn_id)',
 ];
 
 const NORMALIZED_CONSTRAINT_STATEMENTS = [
@@ -763,6 +781,26 @@ const NORMALIZED_TABLE_SPECS = [
       { name: 'record_updated_at', value: (row) => row.updatedAt },
     ],
   }),
+  makeTableSpec<A2ATaskBinding>({
+    table: 'roundtable_a2a_task_bindings',
+    idColumn: 'id',
+    rows: (data) => data.a2aTaskBindings,
+    assign: (data, rows) => {
+      data.a2aTaskBindings = rows;
+    },
+    id: (row) => row.id,
+    orderBy: 'created_at ASC, id ASC',
+    columns: [
+      { name: 'mission_id', value: (row) => row.missionId },
+      { name: 'turn_id', value: (row) => row.turnId },
+      { name: 'plan_task_id', value: (row) => row.planTaskId },
+      { name: 'agent_id', value: (row) => row.agentId },
+      { name: 'remote_task_id', value: (row) => row.remoteTaskId },
+      { name: 'state', value: (row) => row.state },
+      { name: 'created_at', value: (row) => row.createdAt },
+      { name: 'record_updated_at', value: (row) => row.updatedAt },
+    ],
+  }),
   makeTableSpec<RoundtableSettings>({
     table: 'roundtable_settings',
     idColumn: 'id',
@@ -937,6 +975,7 @@ function emptyData(): RoundtableData {
     agentRuntimeConfigs: [],
     agentRuntimeDefaults: [],
     agentRuntimeConversations: [],
+    a2aTaskBindings: [],
     settings: emptySettings(),
   };
 }
@@ -963,6 +1002,7 @@ function normalizeData(raw: Partial<RoundtableData>): RoundtableData {
       ? raw.agentRuntimeDefaults.map(normalizeRuntimeDefault)
       : [],
     agentRuntimeConversations: Array.isArray(raw.agentRuntimeConversations) ? raw.agentRuntimeConversations : [],
+    a2aTaskBindings: Array.isArray(raw.a2aTaskBindings) ? raw.a2aTaskBindings : [],
     settings: normalizeSettings(raw.settings),
   };
 }
@@ -989,6 +1029,7 @@ function emptySettings(): RoundtableSettings {
   return {
     defaultAgentAdapter: null,
     modelProviders: [],
+    a2aRemoteAgents: [],
     workflowTemplates: [],
     updatedAt: nowIso(),
   };
@@ -999,6 +1040,7 @@ function normalizeSettings(raw: Partial<RoundtableSettings> | undefined): Roundt
   return {
     defaultAgentAdapter: typeof raw.defaultAgentAdapter === 'string' ? raw.defaultAgentAdapter : null,
     modelProviders: Array.isArray(raw.modelProviders) ? raw.modelProviders : [],
+    a2aRemoteAgents: Array.isArray(raw.a2aRemoteAgents) ? raw.a2aRemoteAgents : [],
     workflowTemplates: Array.isArray(raw.workflowTemplates) ? raw.workflowTemplates : [],
     updatedAt: typeof raw.updatedAt === 'string' ? raw.updatedAt : nowIso(),
   };

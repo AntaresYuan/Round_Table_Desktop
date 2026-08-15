@@ -1,5 +1,6 @@
 import { mutateData, nowIso, readData, type RoundtableData } from '../store.js';
-import type { ModelProviderConfig, ModelProviderKind } from '../types.js';
+import type { A2ARemoteAgentConfig, ModelProviderConfig, ModelProviderKind } from '../types.js';
+import { AGENT_ROSTER } from './agent-roster.js';
 
 export type ModelProviderDefinition = {
   provider: ModelProviderKind;
@@ -36,6 +37,16 @@ export type SettingsState = {
   effectiveAgentAdapterSource: AgentAdapterResolution['source'];
   effectiveModelProvider: ModelProviderKind | null;
   adapters: Array<{ value: string; label: string; description: string }>;
+  a2aAgents: Array<{
+    agentId: string;
+    name: string;
+    role: string;
+    enabled: boolean;
+    baseUrl: string;
+    cardPath: string;
+    tokenSet: boolean;
+    tokenSource: 'settings' | 'env' | null;
+  }>;
   providers: Array<{
     provider: ModelProviderKind;
     label: string;
@@ -109,6 +120,11 @@ const ADAPTER_OPTIONS = [
     label: 'E2B',
     description: 'Run the task inside an E2B sandbox when credentials are configured.',
   },
+  {
+    value: 'a2a',
+    label: 'A2A Remote Agents',
+    description: 'Dispatch each seat to a configured A2A v1.0 agent.',
+  },
 ];
 
 export async function listSettingsState(): Promise<SettingsState> {
@@ -120,6 +136,7 @@ export async function listSettingsState(): Promise<SettingsState> {
     effectiveAgentAdapterSource: effective.source,
     effectiveModelProvider: effective.modelProvider,
     adapters: ADAPTER_OPTIONS,
+    a2aAgents: AGENT_ROSTER.map((agent) => a2aAgentState(agent.id, agent.displayName, agent.role, data)),
     providers: await Promise.all(MODEL_PROVIDER_DEFINITIONS.map(async (definition) => {
       const resolved = resolveModelProviderFromData(definition.provider, data);
       return {
@@ -139,6 +156,14 @@ export async function listSettingsState(): Promise<SettingsState> {
 
 export async function saveSettings(input: {
   defaultAgentAdapter?: string | null | undefined;
+  a2aAgents?: Array<{
+    agentId: string;
+    enabled?: boolean | undefined;
+    baseUrl?: string | null | undefined;
+    cardPath?: string | null | undefined;
+    authToken?: string | null | undefined;
+    clearAuthToken?: boolean | undefined;
+  }> | undefined;
   providers?: Array<{
     provider: string;
     enabled?: boolean | undefined;
@@ -167,10 +192,22 @@ export async function saveSettings(input: {
       if (index >= 0) providers[index] = next;
       else providers.push(next);
     }
+    const a2aAgents = [...data.settings.a2aRemoteAgents];
+    for (const patch of input.a2aAgents ?? []) {
+      if (!AGENT_ROSTER.some((agent) => agent.id === patch.agentId)) {
+        throw new SettingsActionError('a2a_agent_not_found', 404);
+      }
+      const current = a2aAgents.find((item) => item.agentId === patch.agentId) ?? null;
+      const next = normalizeA2AAgentPatch(current, patch);
+      const index = a2aAgents.findIndex((item) => item.agentId === patch.agentId);
+      if (index >= 0) a2aAgents[index] = next;
+      else a2aAgents.push(next);
+    }
     data.settings = {
       ...data.settings,
       defaultAgentAdapter: hasAdapterPatch ? adapter ?? null : data.settings.defaultAgentAdapter,
       modelProviders: providers,
+      a2aRemoteAgents: a2aAgents,
       updatedAt: nowIso(),
     };
   });
@@ -344,8 +381,70 @@ function normalizeAgentAdapter(value: string | null | undefined): string | null 
   if (raw === 'openai-compat' || raw === 'openai-compatible' || raw === 'openai' || raw === 'deepseek') return 'openai-compat';
   if (raw === 'agent-cli' || raw === 'external-cli' || raw === 'cli-runtime' || raw === 'runtime' || raw === 'cli') return 'agent-cli';
   if (raw === 'e2b') return 'e2b';
+  if (raw === 'a2a' || raw === 'agent-to-agent') return 'a2a';
   if (raw === 'local' || raw === 'local-dispatch') return 'local-dispatch';
   return null;
+}
+
+function a2aAgentState(
+  agentId: string,
+  name: string,
+  role: string,
+  data: RoundtableData,
+): SettingsState['a2aAgents'][number] {
+  const stored = data.settings.a2aRemoteAgents.find((item) => item.agentId === agentId) ?? null;
+  const envKey = agentId.replace(/[^a-zA-Z0-9]+/g, '_').toUpperCase();
+  const envUrl = clean(process.env[`ROUNDTABLE_A2A_URL_${envKey}`]) ?? '';
+  const envToken = clean(process.env[`ROUNDTABLE_A2A_TOKEN_${envKey}`]) ?? null;
+  return {
+    agentId,
+    name,
+    role,
+    enabled: stored?.enabled ?? Boolean(envUrl),
+    baseUrl: stored?.baseUrl || envUrl,
+    cardPath: stored?.cardPath || clean(process.env[`ROUNDTABLE_A2A_CARD_PATH_${envKey}`]) || '/.well-known/agent-card.json',
+    tokenSet: Boolean(stored?.authToken || envToken),
+    tokenSource: stored?.authToken ? 'settings' : envToken ? 'env' : null,
+  };
+}
+
+function normalizeA2AAgentPatch(
+  current: A2ARemoteAgentConfig | null,
+  patch: {
+    agentId: string;
+    enabled?: boolean | undefined;
+    baseUrl?: string | null | undefined;
+    cardPath?: string | null | undefined;
+    authToken?: string | null | undefined;
+    clearAuthToken?: boolean | undefined;
+  },
+): A2ARemoteAgentConfig {
+  const baseUrl = clean(patch.baseUrl ?? undefined) ?? current?.baseUrl ?? '';
+  if (baseUrl) {
+    let parsed: URL;
+    try {
+      parsed = new URL(baseUrl);
+    } catch {
+      throw new SettingsActionError('a2a_invalid_url', 400);
+    }
+    const loopback = ['localhost', '127.0.0.1', '::1'].includes(parsed.hostname);
+    if (parsed.protocol !== 'https:' && !(process.env.NODE_ENV !== 'production' && parsed.protocol === 'http:' && loopback)) {
+      throw new SettingsActionError('a2a_https_required', 400);
+    }
+  }
+  const authToken = patch.clearAuthToken
+    ? null
+    : patch.authToken === undefined
+      ? current?.authToken ?? null
+      : clean(patch.authToken) ?? null;
+  return {
+    agentId: patch.agentId,
+    enabled: patch.enabled ?? current?.enabled ?? true,
+    baseUrl,
+    cardPath: clean(patch.cardPath ?? undefined) ?? current?.cardPath ?? '/.well-known/agent-card.json',
+    authToken,
+    updatedAt: nowIso(),
+  };
 }
 
 function clean(value: string | null | undefined): string | undefined {

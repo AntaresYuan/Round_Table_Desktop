@@ -95,6 +95,14 @@ function SettingsConsole() {
             ...(provider.apiKeyDraft.trim() ? { apiKey: provider.apiKeyDraft.trim() } : {}),
             ...(provider.clearApiKey ? { clearApiKey: true } : {}),
           })),
+          a2aAgents: draft.a2aAgents.map((agent) => ({
+            agentId: agent.agentId,
+            enabled: agent.enabled,
+            baseUrl: agent.baseUrl,
+            cardPath: agent.cardPath,
+            ...(agent.authTokenDraft.trim() ? { authToken: agent.authTokenDraft.trim() } : {}),
+            ...(agent.clearAuthToken ? { clearAuthToken: true } : {}),
+          })),
         }),
       });
       const data = await res.json();
@@ -114,6 +122,15 @@ function SettingsConsole() {
       ...current,
       providers: current.providers.map((item) => (
         item.provider === provider ? { ...item, ...patch } : item
+      )),
+    }));
+  };
+
+  const patchA2AAgent = (agentId, patch) => {
+    setDraft((current) => ({
+      ...current,
+      a2aAgents: current.a2aAgents.map((item) => (
+        item.agentId === agentId ? { ...item, ...patch } : item
       )),
     }));
   };
@@ -176,6 +193,15 @@ function SettingsConsole() {
               {!draft && <div style={{ color: 'var(--text-faint)', fontSize: 13 }}>Loading settings.</div>}
               {providers.map((provider) => (
                 <ProviderCard key={provider.provider} provider={provider} onPatch={patchProvider} />
+              ))}
+            </div>
+          </div>
+
+          <div style={{ ...panel, overflow: 'hidden' }}>
+            <SectionHead title="A2A Agents" />
+            <div style={{ padding: 14, display: 'grid', gap: 12 }}>
+              {(draft?.a2aAgents || []).map((agent) => (
+                <A2AAgentCard key={agent.agentId} agent={agent} onPatch={patchA2AAgent} />
               ))}
             </div>
           </div>
@@ -249,6 +275,54 @@ function ProviderCard({ provider, onPatch }) {
   );
 }
 
+function A2AAgentCard({ agent, onPatch }) {
+  const tokenState = agent.clearAuthToken
+    ? 'will clear'
+    : agent.tokenSet
+      ? `configured${agent.tokenSource ? ` via ${agent.tokenSource}` : ''}`
+      : 'not set';
+  return (
+    <article style={{ border: '1px solid var(--border)', borderRadius: 8, background: 'var(--surface-2)', padding: 12,
+      display: 'grid', gap: 11 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, flex: 1 }}>
+          <input type="checkbox" checked={agent.enabled} onChange={(e) => onPatch(agent.agentId, { enabled: e.target.checked })} />
+          <span style={{ fontSize: 14, fontWeight: 760 }}>{agent.name}</span>
+          <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>{agent.role}</span>
+        </label>
+        <span className="mono" style={{ fontSize: 10.5, color: agent.tokenSet && !agent.clearAuthToken ? 'var(--ok)' : 'var(--text-faint)' }}>
+          token {tokenState}
+        </span>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(220px, .55fr)', gap: 8 }}>
+        <div>
+          <label style={labelStyle}>Agent base URL</label>
+          <input value={agent.baseUrl} onChange={(e) => onPatch(agent.agentId, { baseUrl: e.target.value })}
+            style={field} placeholder="https://agent.example" />
+        </div>
+        <div>
+          <label style={labelStyle}>Agent Card path</label>
+          <input value={agent.cardPath} onChange={(e) => onPatch(agent.agentId, { cardPath: e.target.value })}
+            style={field} placeholder="/.well-known/agent-card.json" />
+        </div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: 8, alignItems: 'end' }}>
+        <div>
+          <label style={labelStyle}>Bearer token</label>
+          <input type="password" value={agent.authTokenDraft} onChange={(e) => onPatch(agent.agentId, {
+            authTokenDraft: e.target.value,
+            clearAuthToken: false,
+          })} style={field} placeholder={agent.tokenSet ? 'Leave blank to keep current token' : 'Optional bearer token'} />
+        </div>
+        <button onClick={() => onPatch(agent.agentId, { authTokenDraft: '', clearAuthToken: true, tokenSet: false })}
+          style={{ ...btn, color: 'var(--bad)' }}>
+          <Icon name="x" size={13} /> Clear token
+        </button>
+      </div>
+    </article>
+  );
+}
+
 function SectionHead({ title }) {
   return (
     <div style={{ height: 40, display: 'flex', alignItems: 'center', padding: '0 12px',
@@ -274,6 +348,11 @@ function toDraft(state) {
       ...provider,
       apiKeyDraft: '',
       clearApiKey: false,
+    })),
+    a2aAgents: (state.a2aAgents || []).map((agent) => ({
+      ...agent,
+      authTokenDraft: '',
+      clearAuthToken: false,
     })),
   };
 }

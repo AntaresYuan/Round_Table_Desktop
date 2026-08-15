@@ -12,9 +12,19 @@ const ProviderSchema = z.object({
   clearApiKey: z.boolean().optional(),
 });
 
+const A2AAgentSchema = z.object({
+  agentId: z.string().min(1),
+  enabled: z.boolean().optional(),
+  baseUrl: z.string().nullable().optional(),
+  cardPath: z.string().nullable().optional(),
+  authToken: z.string().nullable().optional(),
+  clearAuthToken: z.boolean().optional(),
+});
+
 const BodySchema = z.object({
   defaultAgentAdapter: z.string().nullable().optional(),
   providers: z.array(ProviderSchema).optional(),
+  a2aAgents: z.array(A2AAgentSchema).optional(),
 });
 
 export async function GET() {

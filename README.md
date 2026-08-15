@@ -153,6 +153,28 @@ Swap in a real runtime when you want real work:
 | `agent-cli` / `claude-cli` / `opencode` | Spawns the selected local CLI runtime (`claude-code`, `codex`, `opencode`, router, or custom command) in the workspace. Runtime status reports command path, detected version, and credential source before execution. | `ROUNDTABLE_ENABLE_EXTERNAL_AGENT=1`; CLI login or API key |
 | `e2b` | Runs the agent CLI inside an E2B sandbox. Falls back to `local-dispatch` (logged) if the key is missing. | `E2B_API_KEY` |
 | `minimax` | Runs each agent against the real MiniMax chat model (M3/M2.7). Strips `<think>` reasoning; falls back to `local-dispatch` if the key is missing. | `MINIMAX_API_KEY` |
+| `a2a` | Discovers and dispatches each seat to a remote A2A v1.0 agent, streaming task state and artifacts back into the mission. | Per-agent A2A URL; optional Bearer token |
+
+### A2A remote agents
+
+Choose `A2A Remote Agents` under Settings → Default execution, then configure
+the URL for each seat under Settings → A2A Agents. The equivalent environment
+configuration is:
+
+```bash
+ROUNDTABLE_AGENT_ADAPTER=a2a
+ROUNDTABLE_A2A_URL_ATLAS=https://atlas-agent.example
+ROUNDTABLE_A2A_TOKEN_ATLAS=replace-with-remote-agent-token
+ROUNDTABLE_A2A_CARD_PATH_ATLAS=/.well-known/agent-card.json
+```
+
+Replace `ATLAS` with another Roundtable agent id for per-seat routing. Saved
+settings take precedence over environment values for the same seat. Roundtable
+keeps Mission/DAG/review orchestration locally, maps remote task ids to local
+plan tasks, and materializes supported text artifacts below
+`.roundtable/runs/a2a/`. The first release sends text and structured handoff
+context; it does not expose local `workspace://` files or apply remote patches
+directly to source files.
 
 ## 🔧 Configuration
 

@@ -143,6 +143,25 @@ flowchart LR
 | `agent-cli` / `claude-cli` / `opencode` | 在工作区内启动所选的本地 CLI 运行时(`claude-code`、`codex`、`opencode`、router 或自定义命令)。执行前会报告命令路径、检测到的版本和凭证来源。 | `ROUNDTABLE_ENABLE_EXTERNAL_AGENT=1`;对应 CLI 的登录态或 API key |
 | `e2b` | 在 E2B 沙箱中运行智能体 CLI。缺少 key 时回退到 `local-dispatch`(有日志)。 | `E2B_API_KEY` |
 | `minimax` | 每个智能体调用真实的 MiniMax 对话模型(M3/M2.7)。自动剥离 `<think>` 推理;缺少 key 时回退到 `local-dispatch`。 | `MINIMAX_API_KEY` |
+| `a2a` | 发现并调用每个席位配置的远程 A2A v1.0 Agent，把任务状态和产物流式回传到 Mission。 | 每个 Agent 的 A2A URL；Bearer Token 可选 |
+
+### A2A 远程 Agent
+
+在设置页把默认执行方式选为 `A2A Remote Agents`，再在 `A2A Agents`
+区域为每个席位配置地址。也可以使用环境变量：
+
+```bash
+ROUNDTABLE_AGENT_ADAPTER=a2a
+ROUNDTABLE_A2A_URL_ATLAS=https://atlas-agent.example
+ROUNDTABLE_A2A_TOKEN_ATLAS=replace-with-remote-agent-token
+ROUNDTABLE_A2A_CARD_PATH_ATLAS=/.well-known/agent-card.json
+```
+
+其他席位可把 `ATLAS` 换成对应 Agent id。同一席位同时存在两种配置时，
+设置页保存的配置优先。Mission、DAG、Review/Fix 仍由 Roundtable 本地编排；
+远程 Task ID 会映射回本地 PlanTask，支持的文本产物只会写入
+`.roundtable/runs/a2a/`。当前版本不会把本地 `workspace://` 文件暴露给
+远程 Agent，也不会直接把远程补丁应用到源码。
 
 ## 🔧 配置
 
