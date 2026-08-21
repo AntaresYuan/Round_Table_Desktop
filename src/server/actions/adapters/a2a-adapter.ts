@@ -87,6 +87,8 @@ export async function runOnA2A(
     input.timeoutMs ?? Number(process.env.ROUNDTABLE_AGENT_TIMEOUT_MS || 120_000),
   );
   const toolId = `tool_${input.task.id}`;
+  // Hoisted so the catch can settle a binding the stream left mid-flight.
+  let output = createA2AOutputAccumulator();
   try {
     const created = await createClient(input.config, controller.signal);
     if (created.protocolVersion !== '1.0') {
@@ -95,7 +97,6 @@ export async function runOnA2A(
     const serviceParameters = created.tokenWithheld
       ? authParameters(null)
       : authParameters(input.config.authToken);
-    let output = createA2AOutputAccumulator();
     if (created.tokenWithheld) {
       output.events.push({
         type: 'thinking_delta',
@@ -106,28 +107,40 @@ export async function runOnA2A(
     }
     const request = buildA2ASendRequest({ handoff: input.handoff, handoffText: input.handoffText });
     request.tenant = created.tenant;
+    // `mutateData` is a read-modify-write of the whole store behind a
+    // process-global lock, so persisting on every streamed chunk would
+    // rewrite the store hundreds of times per task and serialize every
+    // other agent in the same scheduler wave. Write only when the fields
+    // the binding actually stores have changed.
+    let persisted = '';
+    const persistBinding = async (): Promise<void> => {
+      if (!output.remoteTaskId) return;
+      const state = output.state ?? 'working';
+      const signature = `${output.remoteTaskId}|${output.remoteContextId ?? ''}|${state}|${output.error ?? ''}`;
+      if (signature === persisted) return;
+      persisted = signature;
+      await upsertA2ATaskBinding({
+        id: bindingId(input.turnId, input.task.id),
+        missionId: input.missionId,
+        turnId: input.turnId,
+        planTaskId: input.task.id,
+        agentId: input.config.agentId,
+        agentBaseUrl: input.config.baseUrl,
+        agentCardPath: input.config.cardPath,
+        remoteTaskId: output.remoteTaskId,
+        remoteContextId: output.remoteContextId,
+        remoteTenant: created.tenant,
+        protocolVersion: created.protocolVersion,
+        state,
+        error: output.error,
+      });
+    };
     for await (const event of created.client.sendMessageStream(request, {
       signal: controller.signal,
       serviceParameters,
     })) {
       output = applyA2AStreamResponse(output, event);
-      if (output.remoteTaskId) {
-        await upsertA2ATaskBinding({
-          id: bindingId(input.turnId, input.task.id),
-          missionId: input.missionId,
-          turnId: input.turnId,
-          planTaskId: input.task.id,
-          agentId: input.config.agentId,
-          agentBaseUrl: input.config.baseUrl,
-          agentCardPath: input.config.cardPath,
-          remoteTaskId: output.remoteTaskId,
-          remoteContextId: output.remoteContextId,
-          remoteTenant: created.tenant,
-          protocolVersion: created.protocolVersion,
-          state: output.state ?? 'working',
-          error: output.error,
-        });
-      }
+      await persistBinding();
     }
     if (!isTerminalA2AState(output.state) && output.remoteTaskId && created.client.getTask) {
       const task = await created.client.getTask(
@@ -135,16 +148,25 @@ export async function runOnA2A(
         { signal: controller.signal, serviceParameters },
       );
       output = applyA2AStreamResponse(output, { payload: { $case: 'task', value: task } });
+      await persistBinding();
     }
     if (output.remoteTaskId && output.state) {
       await finishA2ATaskBinding(input.turnId, input.task.id, output.state, output.error);
     }
     return materializeRunResult(input, output, created.protocolVersion, toolId);
   } catch (error) {
-    if (error instanceof A2AUnavailableError) throw error;
     const message = controller.signal.aborted
       ? 'a2a_request_timeout'
       : sanitizeError(error, input.config.authToken);
+    // A binding recorded mid-stream would otherwise sit in `working`
+    // forever: dispatch falls back to local-dispatch and the turn
+    // completes, so nothing ever revisits this row, and a later interrupt
+    // would try to cancel a task that already died.
+    if (output.remoteTaskId) {
+      await finishA2ATaskBinding(input.turnId, input.task.id, 'failed', message)
+        .catch(() => undefined);
+    }
+    if (error instanceof A2AUnavailableError) throw error;
     throw new A2ARequestError(message);
   } finally {
     clearTimeout(timeout);

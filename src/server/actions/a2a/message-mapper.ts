@@ -107,7 +107,18 @@ export function applyA2AStreamResponse(
   if (payload.$case === 'task') {
     next.remoteTaskId = payload.value.id || next.remoteTaskId;
     next.remoteContextId = payload.value.contextId || next.remoteContextId;
-    for (const artifact of payload.value.artifacts) addArtifact(next, artifact, false);
+    // A Task carries a full snapshot of its artifacts. When one arrives after
+    // artifactUpdate events — notably the getTask reconciliation the adapter
+    // runs when a stream ends non-terminal — re-adding them would duplicate
+    // every part, write the same file twice and emit two artifacts claiming
+    // one path. Identified artifacts we already hold are skipped.
+    const collected = new Set(
+      next.parts.map((part) => part.artifactId).filter((id): id is string => Boolean(id)),
+    );
+    for (const artifact of payload.value.artifacts) {
+      if (artifact.artifactId && collected.has(artifact.artifactId)) continue;
+      addArtifact(next, artifact, false);
+    }
     addMessage(next, payload.value.status?.message);
     applyState(next, payload.value.status?.state);
   } else if (payload.$case === 'artifactUpdate') {

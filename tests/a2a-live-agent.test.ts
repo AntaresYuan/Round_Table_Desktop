@@ -1,8 +1,10 @@
 import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resetData } from '../src/server/store.js';
+import { TaskState } from '@a2a-js/sdk';
+import { bindingsForTurn } from '../src/server/actions/a2a/task-store.js';
 import type { HandoffCardV2, PlanTask } from '../src/server/types.js';
 import { createA2AClient, runOnA2A } from '../src/server/actions/adapters/a2a-adapter.js';
 import { A2AUnavailableError } from '../src/server/actions/a2a/errors.js';
@@ -162,5 +164,139 @@ describe('A2A configuration hardening', () => {
     });
     const stored = (await readData()).settings.a2aRemoteAgents.find((item) => item.agentId === 'mira');
     expect(stored?.authToken).toBe(token);
+  });
+});
+
+describe('A2A task binding lifecycle', () => {
+  it('persists per state change, not per streamed event', async () => {
+    // `mutateData` rewrites the whole store behind a global lock, so the cost
+    // of a run must not scale with how chatty the remote is.
+    const store = await import('../src/server/store.js');
+    const original = store.mutateData;
+
+    const countWrites = async (narrateLines: number, turnId: string): Promise<number> => {
+      const agent = await startTestA2AAgent({ narrate: true, narrateLines });
+      let writes = 0;
+      const spy = vi.spyOn(store, 'mutateData').mockImplementation(async (fn) => {
+        writes += 1;
+        return original(fn);
+      });
+      try {
+        await run(agent.url, { turnId });
+        return writes;
+      } finally { spy.mockRestore(); await agent.close(); }
+    };
+
+    const quiet = await countWrites(2, 'turn-quiet');
+    const chatty = await countWrites(40, 'turn-chatty');
+    expect(chatty).toBe(quiet);
+    // submitted -> working -> completed, then the final settle.
+    expect(quiet).toBeLessThanOrEqual(4);
+  });
+
+  it('settles the binding when the stream fails instead of leaving it working', async () => {
+    const agent = await startTestA2AAgent();
+    try {
+      await expect(runOnA2A({
+        workspace,
+        turnId: 'turn-fail',
+        missionId: 'mission-1',
+        task,
+        handoff,
+        handoffText: 'x',
+        config: config(agent.url),
+      }, {
+        createClient: async () => ({
+          protocolVersion: '1.0',
+          tenant: '',
+          client: {
+            protocolVersion: '1.0',
+            async *sendMessageStream() {
+              yield {
+                payload: {
+                  $case: 'statusUpdate' as const,
+                  value: {
+                    taskId: 'remote-x', contextId: 'ctx-x', metadata: undefined,
+                    status: { state: TaskState.TASK_STATE_WORKING, message: undefined, timestamp: undefined },
+                  },
+                },
+              };
+              throw new Error('transport exploded');
+            },
+          },
+        } as never),
+      })).rejects.toThrow();
+
+      const bindings = await bindingsForTurn('turn-fail');
+      expect(bindings).toHaveLength(1);
+      expect(bindings[0]?.state).toBe('failed');
+      expect(bindings[0]?.error).toContain('transport exploded');
+    } finally { await agent.close(); }
+  });
+
+  it('does not re-collect artifacts when reconciling a non-terminal stream', async () => {
+    const artifact = {
+      artifactId: 'artifact-1', name: 'result.md', description: '',
+      metadata: undefined, extensions: [],
+      parts: [{
+        content: { $case: 'text' as const, value: '# Once only\n' },
+        filename: 'result.md', mediaType: 'text/markdown', metadata: undefined,
+      }],
+    };
+    const result = await runOnA2A({
+      workspace, turnId: 'turn-recon', missionId: 'mission-1', task, handoff,
+      handoffText: 'x', config: config('https://agent.example'),
+    }, {
+      createClient: async () => ({
+        protocolVersion: '1.0',
+        tenant: '',
+        client: {
+          protocolVersion: '1.0',
+          async *sendMessageStream() {
+            // Artifact arrives, then the stream ends without a terminal state.
+            yield { payload: { $case: 'artifactUpdate' as const, value: {
+              taskId: 'remote-1', contextId: 'ctx-1', append: false, lastChunk: true,
+              metadata: undefined, artifact,
+            } } };
+          },
+          // Reconciliation returns a full snapshot containing the same artifact.
+          async getTask() {
+            return {
+              id: 'remote-1', contextId: 'ctx-1', artifacts: [artifact], history: [],
+              metadata: undefined,
+              status: { state: TaskState.TASK_STATE_COMPLETED, message: undefined, timestamp: undefined },
+            } as never;
+          },
+        },
+      } as never),
+    });
+
+    expect(result.ok).toBe(true);
+    expect(await readdir(join(workspace, '.roundtable/runs/a2a/task-1'))).toEqual(['result.md']);
+    const paths = [result.path, ...(result.files ?? []).map((f) => f.path)];
+    expect(paths).toEqual([...new Set(paths)]);
+  });
+});
+
+describe('A2A settings and environment precedence', () => {
+  it('falls through to the environment when a saved row names no endpoint', async () => {
+    // The shape a Settings save produces for a seat the user never configured.
+    await saveSettings({ a2aAgents: [{ agentId: 'mira', enabled: false, baseUrl: '' }] });
+    const resolved = await resolveA2ARemoteAgentConfig('mira', undefined, {
+      ROUNDTABLE_A2A_URL_MIRA: 'https://mira.example',
+      ROUNDTABLE_A2A_TOKEN_MIRA: 'env-token',
+    } as unknown as NodeJS.ProcessEnv);
+    expect(resolved?.baseUrl).toBe('https://mira.example');
+    expect(resolved?.authToken).toBe('env-token');
+    // An explicit disable still holds.
+    expect(resolved?.enabled).toBe(false);
+  });
+
+  it('lets a saved endpoint win over the environment', async () => {
+    await saveSettings({ a2aAgents: [{ agentId: 'mira', enabled: true, baseUrl: 'https://saved.example' }] });
+    const resolved = await resolveA2ARemoteAgentConfig('mira', undefined, {
+      ROUNDTABLE_A2A_URL_MIRA: 'https://env.example',
+    } as unknown as NodeJS.ProcessEnv);
+    expect(resolved?.baseUrl).toBe('https://saved.example');
   });
 });

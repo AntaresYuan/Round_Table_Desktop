@@ -21,16 +21,21 @@ export async function resolveA2ARemoteAgentConfig(
   const current = data ?? await readData();
   const stored = current.settings.a2aRemoteAgents.find((item) => item.agentId === agentId) ?? null;
   const key = agentId.replace(/[^a-zA-Z0-9]+/g, '_').toUpperCase();
-  if (stored) return storedConfig(stored, clean(env[`ROUNDTABLE_A2A_TOKEN_${key}`]) ?? null);
+  // Saved settings win, but only when they actually name an endpoint. A row
+  // with no baseUrl carries no dispatchable configuration, so it must not
+  // shadow ROUNDTABLE_A2A_URL_* — otherwise adding the env var after any
+  // Settings save would silently never take effect.
+  if (stored?.baseUrl) return storedConfig(stored, clean(env[`ROUNDTABLE_A2A_TOKEN_${key}`]) ?? null);
 
   const baseUrl = clean(env[`ROUNDTABLE_A2A_URL_${key}`]);
   if (!baseUrl) return null;
   return {
     agentId,
-    enabled: true,
+    // An explicit disable in settings still holds over the env fallback.
+    enabled: stored?.enabled ?? true,
     baseUrl: assertAllowedA2AUrl(baseUrl, env.NODE_ENV),
-    cardPath: clean(env[`ROUNDTABLE_A2A_CARD_PATH_${key}`]) ?? '/.well-known/agent-card.json',
-    authToken: clean(env[`ROUNDTABLE_A2A_TOKEN_${key}`]) ?? null,
+    cardPath: stored?.cardPath || clean(env[`ROUNDTABLE_A2A_CARD_PATH_${key}`]) || '/.well-known/agent-card.json',
+    authToken: stored?.authToken || clean(env[`ROUNDTABLE_A2A_TOKEN_${key}`]) || null,
     source: 'env',
   };
 }

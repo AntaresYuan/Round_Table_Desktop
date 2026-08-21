@@ -23,6 +23,8 @@ export type TestAgentOptions = {
   artifactMediaType?: string;
   /** Emit interim status messages before delivering. */
   narrate?: boolean;
+  /** How many narration events to emit when `narrate` is set. */
+  narrateLines?: number;
   /** Advertise the interface at this URL instead of the real one. */
   advertisedUrlOverride?: string | null;
 };
@@ -54,7 +56,11 @@ class TestExecutor implements AgentExecutor {
     } as never));
 
     if (this.options.narrate) {
-      for (const line of ['Reading the handoff…', 'Drafting the deliverable…']) {
+      const count = this.options.narrateLines ?? 2;
+      const lines = count === 2
+        ? ['Reading the handoff…', 'Drafting the deliverable…']
+        : Array.from({ length: count }, (_, i) => `Working, step ${i + 1}…`);
+      for (const line of lines) {
         bus.publish(AgentEvent.statusUpdate({
           taskId,
           contextId,
