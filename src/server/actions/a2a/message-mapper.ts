@@ -152,18 +152,30 @@ export function isTerminalA2AState(state: A2ATaskBindingState | null): boolean {
 export function materializableA2AParts(parts: A2ACollectedPart[]): A2ACollectedPart[] {
   return parts.filter((part) =>
     (part.kind === 'text' || part.kind === 'data')
-    && A2A_OUTPUT_MODES.includes(part.mediaType),
+    && A2A_OUTPUT_MODES.includes(baseMediaType(part.mediaType)),
   );
+}
+
+// Remote agents routinely stamp parameters on the media type
+// (`text/plain; charset=utf-8`). Compare on the bare type/subtype so a
+// perfectly good artifact is not discarded over a charset.
+export function baseMediaType(value: string): string {
+  return value.split(';')[0]?.trim().toLowerCase() ?? '';
 }
 
 function addArtifact(output: A2AOutputAccumulator, artifact: Artifact, append: boolean): void {
   for (const part of artifact.parts) addPart(output, part, artifact.artifactId, artifact.name, append);
 }
 
+// Status/agent messages are the remote agent's narration. They belong in the
+// event stream only: materializing them would write the agent's chatter into
+// the workspace as if it were the deliverable (and successive messages share
+// the same fallback filename, so they would also clobber each other).
+// Parts that carry an explicit filename are genuine attachments and are kept.
 function addMessage(output: A2AOutputAccumulator, message: Message | undefined): void {
   if (!message) return;
   for (const part of message.parts) {
-    addPart(output, part, null, part.filename || 'message.txt', false);
+    if (part.filename) addPart(output, part, null, part.filename, false);
     if (part.content?.$case === 'text' && part.content.value.trim()) {
       output.events.push({ type: 'text_delta', delta: part.content.value });
     }

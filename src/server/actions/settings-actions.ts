@@ -1,6 +1,7 @@
 import { mutateData, nowIso, readData, type RoundtableData } from '../store.js';
 import type { A2ARemoteAgentConfig, ModelProviderConfig, ModelProviderKind } from '../types.js';
 import { AGENT_ROSTER } from './agent-roster.js';
+import { assertAllowedA2AUrl } from './a2a/config.js';
 
 export type ModelProviderDefinition = {
   provider: ModelProviderKind;
@@ -421,22 +422,21 @@ function normalizeA2AAgentPatch(
 ): A2ARemoteAgentConfig {
   const baseUrl = clean(patch.baseUrl ?? undefined) ?? current?.baseUrl ?? '';
   if (baseUrl) {
-    let parsed: URL;
+    // Single source of truth for the transport policy — the resolver applies
+    // the same check at dispatch time, so they must not drift apart.
     try {
-      parsed = new URL(baseUrl);
-    } catch {
-      throw new SettingsActionError('a2a_invalid_url', 400);
-    }
-    const loopback = ['localhost', '127.0.0.1', '::1'].includes(parsed.hostname);
-    if (parsed.protocol !== 'https:' && !(process.env.NODE_ENV !== 'production' && parsed.protocol === 'http:' && loopback)) {
-      throw new SettingsActionError('a2a_https_required', 400);
+      assertAllowedA2AUrl(baseUrl, process.env.NODE_ENV);
+    } catch (error) {
+      throw new SettingsActionError((error as Error).message, 400);
     }
   }
+  // Bearer tokens are not free text: `clean()` caps values at 500 characters,
+  // which silently corrupts a JWT. Trim only.
   const authToken = patch.clearAuthToken
     ? null
     : patch.authToken === undefined
       ? current?.authToken ?? null
-      : clean(patch.authToken) ?? null;
+      : patch.authToken?.trim() || null;
   return {
     agentId: patch.agentId,
     enabled: patch.enabled ?? current?.enabled ?? true,
