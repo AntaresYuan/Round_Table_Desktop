@@ -234,15 +234,19 @@ describe('A2A task binding lifecycle', () => {
     } finally { await agent.close(); }
   });
 
-  it('does not re-collect artifacts when reconciling a non-terminal stream', async () => {
-    const artifact = {
+  it('takes the reconciled snapshot as authoritative over a partial chunk', async () => {
+    const makeArtifact = (value: string) => ({
       artifactId: 'artifact-1', name: 'result.md', description: '',
       metadata: undefined, extensions: [],
       parts: [{
-        content: { $case: 'text' as const, value: '# Once only\n' },
+        content: { $case: 'text' as const, value },
         filename: 'result.md', mediaType: 'text/markdown', metadata: undefined,
       }],
-    };
+    });
+    // The stream delivers a first chunk and dies before the rest arrives;
+    // the snapshot the adapter then fetches holds the complete artifact.
+    const partial = makeArtifact('# Result\n\nFirst half');
+    const complete = makeArtifact('# Result\n\nFirst half and second half.\n');
     const result = await runOnA2A({
       workspace, turnId: 'turn-recon', missionId: 'mission-1', task, handoff,
       handoffText: 'x', config: config('https://agent.example'),
@@ -255,14 +259,14 @@ describe('A2A task binding lifecycle', () => {
           async *sendMessageStream() {
             // Artifact arrives, then the stream ends without a terminal state.
             yield { payload: { $case: 'artifactUpdate' as const, value: {
-              taskId: 'remote-1', contextId: 'ctx-1', append: false, lastChunk: true,
-              metadata: undefined, artifact,
+              taskId: 'remote-1', contextId: 'ctx-1', append: false, lastChunk: false,
+              metadata: undefined, artifact: partial,
             } } };
           },
           // Reconciliation returns a full snapshot containing the same artifact.
           async getTask() {
             return {
-              id: 'remote-1', contextId: 'ctx-1', artifacts: [artifact], history: [],
+              id: 'remote-1', contextId: 'ctx-1', artifacts: [complete], history: [],
               metadata: undefined,
               status: { state: TaskState.TASK_STATE_COMPLETED, message: undefined, timestamp: undefined },
             } as never;
@@ -272,6 +276,9 @@ describe('A2A task binding lifecycle', () => {
     });
 
     expect(result.ok).toBe(true);
+    // Authoritative snapshot wins over the truncated streamed chunk …
+    expect(result.text).toBe('# Result\n\nFirst half and second half.\n');
+    // … and does not turn into a second artifact alongside it.
     expect(await readdir(join(workspace, '.roundtable/runs/a2a/task-1'))).toEqual(['result.md']);
     const paths = [result.path, ...(result.files ?? []).map((f) => f.path)];
     expect(paths).toEqual([...new Set(paths)]);
@@ -298,5 +305,17 @@ describe('A2A settings and environment precedence', () => {
       ROUNDTABLE_A2A_URL_MIRA: 'https://env.example',
     } as unknown as NodeJS.ProcessEnv);
     expect(resolved?.baseUrl).toBe('https://saved.example');
+  });
+});
+
+describe('A2A synchronous message replies', () => {
+  it('materializes a bare Message reply that carries no filename', async () => {
+    const agent = await startTestA2AAgent({ respondWithMessage: true });
+    try {
+      const result = await run(agent.url);
+      expect(result.ok).toBe(true);
+      // The agent's answer, not the "no supported artifact" placeholder.
+      expect(result.text).toBe(TEST_AGENT_DELIVERABLE);
+    } finally { await agent.close(); }
   });
 });

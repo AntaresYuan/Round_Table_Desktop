@@ -27,6 +27,11 @@ export type TestAgentOptions = {
   narrateLines?: number;
   /** Advertise the interface at this URL instead of the real one. */
   advertisedUrlOverride?: string | null;
+  /**
+   * Reply with a bare Message instead of a Task — the shape a synchronous
+   * agent uses when it has an answer and no long-running work to track.
+   */
+  respondWithMessage?: boolean;
 };
 
 export type TestAgent = {
@@ -45,6 +50,27 @@ class TestExecutor implements AgentExecutor {
   async execute(ctx: RequestContext, bus: ExecutionEventBus): Promise<void> {
     const taskId = ctx.taskId || randomUUID();
     const contextId = ctx.contextId || randomUUID();
+
+    if (this.options.respondWithMessage) {
+      bus.publish(AgentEvent.message({
+        messageId: randomUUID(),
+        contextId,
+        taskId: '',
+        role: Role.ROLE_AGENT,
+        // No filename: the message itself is the answer.
+        parts: [{
+          content: { $case: 'text', value: DELIVERABLE },
+          filename: '',
+          mediaType: 'text/markdown',
+          metadata: undefined,
+        }],
+        metadata: undefined,
+        extensions: [],
+        referenceTaskIds: [],
+      } as never));
+      bus.finished();
+      return;
+    }
 
     bus.publish(AgentEvent.task({
       id: taskId,
