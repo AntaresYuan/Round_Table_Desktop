@@ -229,10 +229,48 @@ export type ModelProviderConfig = {
 export type RoundtableSettings = {
   defaultAgentAdapter: string | null;
   modelProviders: ModelProviderConfig[];
+  a2aRemoteAgents: A2ARemoteAgentConfig[];
   // User-edited workflow templates. A custom template with a builtin id
   // OVERRIDES that builtin everywhere (resolution, auto-select, plan
   // generation); novel ids are additional selectable workflows.
   workflowTemplates: WorkflowTemplate[];
+  updatedAt: string;
+};
+
+export type A2ARemoteAgentConfig = {
+  agentId: string;
+  enabled: boolean;
+  baseUrl: string;
+  cardPath: string | null;
+  authToken: string | null;
+  updatedAt: string;
+};
+
+export type A2ATaskBindingState =
+  | 'submitted'
+  | 'working'
+  | 'completed'
+  | 'failed'
+  | 'canceled'
+  | 'input_required'
+  | 'auth_required'
+  | 'rejected';
+
+export type A2ATaskBinding = {
+  id: string;
+  missionId: string;
+  turnId: string;
+  planTaskId: string;
+  agentId: string;
+  agentBaseUrl: string;
+  agentCardPath: string | null;
+  remoteTaskId: string;
+  remoteContextId: string | null;
+  remoteTenant: string;
+  protocolVersion: string;
+  state: A2ATaskBindingState;
+  error: string | null;
+  createdAt: string;
   updatedAt: string;
 };
 
@@ -423,6 +461,13 @@ export type DispatchRecord = {
   // files) — the per-agent attribution link the conversation UI renders.
   // Absent on records persisted before this field existed.
   artifactIds?: string[] | undefined;
+  remote?: {
+    protocol: 'a2a';
+    taskId: string;
+    contextId: string | null;
+    protocolVersion: string;
+    agentBaseUrl: string;
+  } | undefined;
 };
 
 export type WorkflowStageRunStatus = 'pending' | 'active' | 'running' | 'done' | 'blocked' | 'failed';

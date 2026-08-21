@@ -8,6 +8,9 @@ import type {
   WorkflowRun,
 } from '../../types.js';
 import { E2BUnavailableError } from '../adapters/e2b-adapter.js';
+import { A2ARequestError, A2AUnavailableError, cancelA2ABinding } from '../adapters/a2a-adapter.js';
+import { resolveA2ARemoteAgentConfig } from '../a2a/config.js';
+import { bindingsForTurn } from '../a2a/task-store.js';
 import { MiniMaxRequestError, MiniMaxUnavailableError } from '../adapters/minimax-adapter.js';
 import { OpenAICompatRequestError, OpenAICompatUnavailableError } from '../adapters/openai-compat-adapter.js';
 import { normalizeAdapter, runAgentTask } from '../agent-runner.js';
@@ -177,6 +180,7 @@ export async function dispatchTurn(input: DispatchInput): Promise<DispatchRespon
   const eventsByTask = new Map<string, AgentEvent[]>();
   const artifactByTask = new Map<string, Artifact>();
   const allArtifactsByTask = new Map<string, Artifact[]>();
+  const remoteByTask = new Map<string, NonNullable<DispatchRecord['remote']>>();
 
   // Work completed by EARLIER turns in this chat: handed to every agent so a
   // follow-up request is treated as an increment on the existing work, not a
@@ -253,7 +257,18 @@ export async function dispatchTurn(input: DispatchInput): Promise<DispatchRespon
     let result;
     let fallbackNote: AgentEvent | null = null;
     try {
-      result = await runAgentTask({ adapter, workspace, task: effectiveTask, message: turn.message, turnId: turn.id, chatId: turn.localChatId, handoffContext, runtimeEnv });
+      result = await runAgentTask({
+        adapter,
+        workspace,
+        task: effectiveTask,
+        message: turn.message,
+        turnId: turn.id,
+        chatId: turn.localChatId,
+        handoffContext,
+        handoffCard,
+        missionId: handoffCard.missionId,
+        runtimeEnv,
+      });
     } catch (error) {
       // Opt-in adapter unavailable (E2B / MiniMax / OpenAI-compatible): fall back
       // to local-dispatch in this layer (not silently inside the adapter). The
@@ -265,6 +280,8 @@ export async function dispatchTurn(input: DispatchInput): Promise<DispatchRespon
         || error instanceof MiniMaxRequestError
         || error instanceof OpenAICompatUnavailableError
         || error instanceof OpenAICompatRequestError
+        || error instanceof A2AUnavailableError
+        || error instanceof A2ARequestError
       ) {
         fallbackNote = {
           type: 'thinking_delta',
@@ -277,6 +294,7 @@ export async function dispatchTurn(input: DispatchInput): Promise<DispatchRespon
     }
 
     eventsByTask.set(task.id, fallbackNote ? [fallbackNote, ...result.events] : result.events);
+    if (result.remote) remoteByTask.set(task.id, result.remote);
     const produced = artifactsFromRun(turn, effectiveTask, result);
     artifactByTask.set(task.id, produced.primary);
     allArtifactsByTask.set(task.id, produced.all);
@@ -449,6 +467,7 @@ export async function dispatchTurn(input: DispatchInput): Promise<DispatchRespon
     ...(record.producedFor !== undefined ? { producedFor: record.producedFor } : {}),
     ...(record.fixRound !== undefined ? { fixRound: record.fixRound } : {}),
     artifactIds: (allArtifactsByTask.get(record.taskId) ?? []).map((artifact) => artifact.id),
+    ...(remoteByTask.get(record.taskId) ? { remote: remoteByTask.get(record.taskId)! } : {}),
   }));
 
   // Fold every task's artifacts together with replace-by-identity semantics:
@@ -566,6 +585,7 @@ export async function dispatchTurn(input: DispatchInput): Promise<DispatchRespon
 export async function interruptTurn(turnId: string, access?: { actor?: Actor | null | undefined } | undefined): Promise<DispatchResponse> {
   const existing = await getTurn(turnId, access);
   if (!existing) throw new ActionError('turn_not_found', 404);
+  await cancelA2ATasksForTurn(turnId);
   const turn = await updateTurn(turnId, (current) => ({
     ...current,
     dispatchStatus: 'failed',
@@ -580,6 +600,16 @@ export async function interruptTurn(turnId: string, access?: { actor?: Actor | n
     workflowRun: workflowRunForTurn({ ...current, mission: mission ?? current.mission }),
   }), access);
   return dispatchResponse(requireTurn(synced));
+}
+
+export async function cancelA2ATasksForTurn(turnId: string): Promise<void> {
+  const terminal = new Set(['completed', 'failed', 'canceled', 'rejected']);
+  const bindings = (await bindingsForTurn(turnId)).filter((binding) => !terminal.has(binding.state));
+  await Promise.allSettled(bindings.map(async (binding) => {
+    const config = await resolveA2ARemoteAgentConfig(binding.agentId);
+    if (!config) return;
+    await cancelA2ABinding(binding, config);
+  }));
 }
 
 // Map the scheduler's per-task status onto the WorkflowRun shape the UI reads.

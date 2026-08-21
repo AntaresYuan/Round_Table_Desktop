@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { readData } from '../store.js';
-import type { AgentEvent, ArtifactKind, PlanTask } from '../types.js';
+import type { AgentEvent, ArtifactKind, HandoffCardV2, PlanTask } from '../types.js';
 import {
   docPolicyFor,
   formatMemoryForPrompt,
@@ -13,6 +13,7 @@ import { extractMemorySection } from './memory-extract.js';
 import { agentForTask, type AgentProfile } from './agent-roster.js';
 import { deliverableText } from './deliverable.js';
 import { runOnE2B } from './adapters/e2b-adapter.js';
+import { A2AUnavailableError, runOnA2A } from './adapters/a2a-adapter.js';
 import { MiniMaxRequestError, MiniMaxUnavailableError, resolvedMiniMaxModel, runOnMiniMax } from './adapters/minimax-adapter.js';
 import { OpenAICompatRequestError, OpenAICompatUnavailableError, resolvedOpenAICompatModel, runOnOpenAICompat } from './adapters/openai-compat-adapter.js';
 import { configuredRuntimeForAgent, mergedRuntimeConfigForAgent } from './cli-runtimes/registry.js';
@@ -30,6 +31,7 @@ import {
 } from './runtime-actions.js';
 import { applyDocPolicy, quarantineDocs } from './turns/doc-policy.js';
 import { collectChangedWorkspaceFiles, type ChangedWorkspaceFile } from './turns/workspace-scan.js';
+import { resolveA2ARemoteAgentConfig } from './a2a/config.js';
 
 export type AgentRunResult = {
   text: string;
@@ -42,6 +44,13 @@ export type AgentRunResult = {
   // (CLI-backed agents only). These are the deliverables; `text` is the
   // agent's narration and must never be presented as the product.
   files?: ChangedWorkspaceFile[] | undefined;
+  remote?: {
+    protocol: 'a2a';
+    taskId: string;
+    contextId: string | null;
+    protocolVersion: string;
+    agentBaseUrl: string;
+  } | undefined;
 };
 
 export async function runAgentTask(input: {
@@ -54,9 +63,14 @@ export async function runAgentTask(input: {
   // turns in one chat resume the same CLI conversation.
   chatId?: string | null | undefined;
   handoffContext?: string | undefined;
+  handoffCard?: HandoffCardV2 | undefined;
+  missionId?: string | undefined;
   runtimeEnv?: NodeJS.ProcessEnv | undefined;
 }): Promise<AgentRunResult> {
   const adapter = normalizeAdapter(input.adapter);
+  if (adapter === 'a2a') {
+    return runA2ARemoteTask(input);
+  }
   if (adapter === 'minimax') {
     return runMiniMaxTask(input);
   }
@@ -74,13 +88,14 @@ export async function runAgentTask(input: {
 
 export function normalizeAdapter(
   value: string | null | undefined,
-): 'local-dispatch' | 'agent-cli' | 'e2b' | 'minimax' | 'openai-compat' {
+): 'local-dispatch' | 'agent-cli' | 'e2b' | 'minimax' | 'openai-compat' | 'a2a' {
   const raw = (value || process.env.ROUNDTABLE_AGENT_ADAPTER || 'local-dispatch').trim().toLowerCase();
   if (raw === 'minimax') return 'minimax';
   // Generic OpenAI-compatible adapter (DeepSeek, Together, Groq, local vLLM, …).
   // Accept a few friendly aliases for the same code path.
   if (raw === 'openai-compat' || raw === 'openai' || raw === 'deepseek') return 'openai-compat';
   if (raw === 'e2b') return 'e2b';
+  if (raw === 'a2a' || raw === 'agent-to-agent') return 'a2a';
   if (raw === 'agent-cli' || raw === 'external-cli' || raw === 'cli-runtime' || raw === 'runtime' || raw === 'cli') {
     return 'agent-cli';
   }
@@ -92,6 +107,34 @@ export function normalizeAdapter(
     || raw === 'opencode';
   if (wantsExternalCli && externalCliEnabled()) return 'agent-cli';
   return 'local-dispatch';
+}
+
+async function runA2ARemoteTask(input: {
+  workspace: string;
+  task: PlanTask;
+  message: string;
+  turnId?: string | undefined;
+  handoffContext?: string | undefined;
+  handoffCard?: HandoffCardV2 | undefined;
+  missionId?: string | undefined;
+}): Promise<AgentRunResult> {
+  const agent = agentForTask(input.task);
+  const config = await resolveA2ARemoteAgentConfig(agent.id);
+  if (!config?.enabled || !config.baseUrl) {
+    throw new A2AUnavailableError(`a2a_remote_not_configured:${agent.id}`);
+  }
+  if (!input.turnId || !input.handoffCard) {
+    throw new A2AUnavailableError('a2a_handoff_required');
+  }
+  return runOnA2A({
+    workspace: input.workspace,
+    turnId: input.turnId,
+    missionId: input.missionId ?? input.handoffCard.missionId,
+    task: input.task,
+    handoff: input.handoffCard,
+    handoffText: input.handoffContext ?? input.message,
+    config,
+  });
 }
 
 function externalCliEnabled(): boolean {
