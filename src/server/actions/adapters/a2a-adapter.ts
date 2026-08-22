@@ -19,7 +19,10 @@ import {
 } from '@a2a-js/sdk/client';
 import type { A2ATaskBinding, HandoffCardV2, PlanTask } from '../../types.js';
 import type { AgentRunResult } from '../agent-runner.js';
-import type { ResolvedA2ARemoteAgentConfig } from '../a2a/config.js';
+import { assertAllowedA2AUrl, type ResolvedA2ARemoteAgentConfig } from '../a2a/config.js';
+import { A2ARequestError, A2AUnavailableError } from '../a2a/errors.js';
+
+export { A2ARequestError, A2AUnavailableError };
 import {
   applyA2AStreamResponse,
   a2aStateName,
@@ -27,6 +30,7 @@ import {
   createA2AOutputAccumulator,
   isTerminalA2AState,
   materializableA2AParts,
+  baseMediaType,
   type A2ACollectedPart,
 } from '../a2a/message-mapper.js';
 import { finishA2ATaskBinding, upsertA2ATaskBinding } from '../a2a/task-store.js';
@@ -49,23 +53,14 @@ export type CreatedA2AClient = {
   client: A2AClientLike;
   protocolVersion: string;
   tenant: string;
+  // Origin the card actually pointed at, and the origin the operator
+  // configured. The bearer token is only sent when they match.
+  interfaceOrigin?: string | undefined;
+  trustedOrigin?: string | undefined;
+  tokenWithheld?: boolean | undefined;
 };
 
-export class A2AUnavailableError extends Error {
-  readonly code = 'a2a_unavailable';
-  constructor(message = 'a2a_unavailable') {
-    super(message);
-    this.name = 'A2AUnavailableError';
-  }
-}
 
-export class A2ARequestError extends Error {
-  readonly code = 'a2a_request_failed';
-  constructor(message: string) {
-    super(message);
-    this.name = 'A2ARequestError';
-  }
-}
 
 export async function runOnA2A(
   input: {
@@ -79,7 +74,7 @@ export async function runOnA2A(
     timeoutMs?: number;
   },
   dependencies: {
-    createClient?: (config: ResolvedA2ARemoteAgentConfig) => Promise<CreatedA2AClient>;
+    createClient?: (config: ResolvedA2ARemoteAgentConfig, signal?: AbortSignal) => Promise<CreatedA2AClient>;
   } = {},
 ): Promise<AgentRunResult> {
   if (!input.config.enabled || !input.config.baseUrl) {
@@ -92,37 +87,60 @@ export async function runOnA2A(
     input.timeoutMs ?? Number(process.env.ROUNDTABLE_AGENT_TIMEOUT_MS || 120_000),
   );
   const toolId = `tool_${input.task.id}`;
+  // Hoisted so the catch can settle a binding the stream left mid-flight.
+  let output = createA2AOutputAccumulator();
   try {
-    const created = await createClient(input.config);
+    const created = await createClient(input.config, controller.signal);
     if (created.protocolVersion !== '1.0') {
       throw new A2AUnavailableError('a2a_v1_interface_required');
     }
-    const serviceParameters = authParameters(input.config.authToken);
+    const serviceParameters = created.tokenWithheld
+      ? authParameters(null)
+      : authParameters(input.config.authToken);
+    if (created.tokenWithheld) {
+      output.events.push({
+        type: 'thinking_delta',
+        delta: `A2A: ${input.config.agentId}'s agent card advertises its interface on `
+          + `${created.interfaceOrigin}, but the configured endpoint is ${created.trustedOrigin}. `
+          + 'Continuing without the bearer token.',
+      });
+    }
     const request = buildA2ASendRequest({ handoff: input.handoff, handoffText: input.handoffText });
     request.tenant = created.tenant;
-    let output = createA2AOutputAccumulator();
+    // `mutateData` is a read-modify-write of the whole store behind a
+    // process-global lock, so persisting on every streamed chunk would
+    // rewrite the store hundreds of times per task and serialize every
+    // other agent in the same scheduler wave. Write only when the fields
+    // the binding actually stores have changed.
+    let persisted = '';
+    const persistBinding = async (): Promise<void> => {
+      if (!output.remoteTaskId) return;
+      const state = output.state ?? 'working';
+      const signature = `${output.remoteTaskId}|${output.remoteContextId ?? ''}|${state}|${output.error ?? ''}`;
+      if (signature === persisted) return;
+      persisted = signature;
+      await upsertA2ATaskBinding({
+        id: bindingId(input.turnId, input.task.id),
+        missionId: input.missionId,
+        turnId: input.turnId,
+        planTaskId: input.task.id,
+        agentId: input.config.agentId,
+        agentBaseUrl: input.config.baseUrl,
+        agentCardPath: input.config.cardPath,
+        remoteTaskId: output.remoteTaskId,
+        remoteContextId: output.remoteContextId,
+        remoteTenant: created.tenant,
+        protocolVersion: created.protocolVersion,
+        state,
+        error: output.error,
+      });
+    };
     for await (const event of created.client.sendMessageStream(request, {
       signal: controller.signal,
       serviceParameters,
     })) {
       output = applyA2AStreamResponse(output, event);
-      if (output.remoteTaskId) {
-        await upsertA2ATaskBinding({
-          id: bindingId(input.turnId, input.task.id),
-          missionId: input.missionId,
-          turnId: input.turnId,
-          planTaskId: input.task.id,
-          agentId: input.config.agentId,
-          agentBaseUrl: input.config.baseUrl,
-          agentCardPath: input.config.cardPath,
-          remoteTaskId: output.remoteTaskId,
-          remoteContextId: output.remoteContextId,
-          remoteTenant: created.tenant,
-          protocolVersion: created.protocolVersion,
-          state: output.state ?? 'working',
-          error: output.error,
-        });
-      }
+      await persistBinding();
     }
     if (!isTerminalA2AState(output.state) && output.remoteTaskId && created.client.getTask) {
       const task = await created.client.getTask(
@@ -130,16 +148,25 @@ export async function runOnA2A(
         { signal: controller.signal, serviceParameters },
       );
       output = applyA2AStreamResponse(output, { payload: { $case: 'task', value: task } });
+      await persistBinding();
     }
     if (output.remoteTaskId && output.state) {
       await finishA2ATaskBinding(input.turnId, input.task.id, output.state, output.error);
     }
     return materializeRunResult(input, output, created.protocolVersion, toolId);
   } catch (error) {
-    if (error instanceof A2AUnavailableError) throw error;
     const message = controller.signal.aborted
       ? 'a2a_request_timeout'
       : sanitizeError(error, input.config.authToken);
+    // A binding recorded mid-stream would otherwise sit in `working`
+    // forever: dispatch falls back to local-dispatch and the turn
+    // completes, so nothing ever revisits this row, and a later interrupt
+    // would try to cancel a task that already died.
+    if (output.remoteTaskId) {
+      await finishA2ATaskBinding(input.turnId, input.task.id, 'failed', message)
+        .catch(() => undefined);
+    }
+    if (error instanceof A2AUnavailableError) throw error;
     throw new A2ARequestError(message);
   } finally {
     clearTimeout(timeout);
@@ -148,8 +175,14 @@ export async function runOnA2A(
 
 export async function createA2AClient(
   config: ResolvedA2ARemoteAgentConfig,
+  signal?: AbortSignal,
 ): Promise<CreatedA2AClient> {
-  const fetchImpl = authenticatedFetch(config.authToken);
+  // The bearer token is only ever attached to the origin the operator
+  // configured. An Agent Card is remote-controlled data: it can name an
+  // interface on any host, and without this scope the credential (and the
+  // handoff card behind it) would follow the card wherever it points.
+  const trustedOrigin = new URL(config.baseUrl).origin;
+  const fetchImpl = scopedFetch(config.authToken, trustedOrigin, signal);
   const options = ClientFactoryOptions.createFrom(ClientFactoryOptions.default, {
     cardResolver: new DefaultAgentCardResolver({ fetchImpl }),
     transports: [
@@ -162,7 +195,10 @@ export async function createA2AClient(
     config.baseUrl,
     config.cardPath ?? undefined,
   );
-  const card = await client.getAgentCard({ serviceParameters: authParameters(config.authToken) });
+  const card = await client.getAgentCard({
+    serviceParameters: authParameters(config.authToken),
+    ...(signal ? { signal } : {}),
+  });
   const selected = card.supportedInterfaces.find((item) =>
     item.protocolVersion === client.protocolVersion
     && (item.protocolBinding.toUpperCase() === 'JSONRPC' || item.protocolBinding.toUpperCase() === 'HTTP+JSON'),
@@ -170,14 +206,30 @@ export async function createA2AClient(
   if (!selected || client.protocolVersion !== '1.0') {
     throw new A2AUnavailableError('a2a_v1_interface_required');
   }
-  return { client, protocolVersion: client.protocolVersion, tenant: selected.tenant || '' };
+  // The interface URL is attacker-controllable input. Hold it to the same
+  // transport policy as the configured endpoint so a card cannot downgrade
+  // the exchange to plain HTTP or aim it at an internal address.
+  const interfaceOrigin = new URL(assertAllowedA2AUrl(selected.url, process.env.NODE_ENV)).origin;
+  // Proceed unauthenticated rather than hand the token to a host the operator
+  // never configured. Verifying signed Agent Cards is the real fix for
+  // trusting a cross-origin interface; until then this is refused, and the
+  // caller surfaces it as a visible event rather than a silent downgrade.
+  const tokenWithheld = Boolean(config.authToken) && interfaceOrigin !== trustedOrigin;
+  return {
+    client,
+    protocolVersion: client.protocolVersion,
+    tenant: selected.tenant || '',
+    interfaceOrigin,
+    trustedOrigin,
+    tokenWithheld,
+  };
 }
 
 export async function cancelA2ABinding(
   binding: A2ATaskBinding,
   config: ResolvedA2ARemoteAgentConfig,
   dependencies: {
-    createClient?: (config: ResolvedA2ARemoteAgentConfig) => Promise<CreatedA2AClient>;
+    createClient?: (config: ResolvedA2ARemoteAgentConfig, signal?: AbortSignal) => Promise<CreatedA2AClient>;
   } = {},
 ): Promise<void> {
   const createClient = dependencies.createClient ?? createA2AClient;
@@ -222,16 +274,24 @@ function materializeRunResult(
     };
     const base = `.roundtable/runs/a2a/${safeSegment(input.task.id)}`;
     const files: ChangedWorkspaceFile[] = [];
-    for (const part of parts.length > 0 ? parts : [selected]) {
+    // Two parts can legitimately carry the same filename. Give each one its
+    // own path instead of letting the later write clobber the earlier and
+    // emitting duplicate entries that all claim the same path.
+    const taken = new Set<string>();
+    let selectedPath = '';
+    const queue = parts.length > 0 ? parts : [selected];
+    // Budget the whole run, not just each part in isolation.
+    let budget = MAX_ARTIFACT_BYTES;
+    for (const part of queue) {
       const text = partText(part);
-      if (Buffer.byteLength(text, 'utf8') > MAX_ARTIFACT_BYTES) {
-        throw new A2ARequestError('a2a_artifact_too_large');
-      }
-      const path = `${base}/${safeSegment(part.filename)}`;
+      budget -= Buffer.byteLength(text, 'utf8');
+      if (budget < 0) throw new A2ARequestError('a2a_artifact_too_large');
+      const path = `${base}/${uniqueSegment(safeSegment(part.filename), taken)}`;
       await writeText(input.workspace, path, text);
       files.push({ path, text, kind: artifactKindForFile(path) });
+      if (part === selected) selectedPath = path;
     }
-    const selectedPath = `${base}/${safeSegment(selected.filename)}`;
+    if (!selectedPath) selectedPath = files[0]?.path ?? `${base}/result.md`;
     const selectedText = partText(selected);
     const ok = output.state === 'completed';
     const events = [
@@ -271,13 +331,29 @@ function materializeRunResult(
   }
 }
 
+const PART_PRIORITY = ['text/html', 'text/markdown', 'application/json', 'text/plain'];
+
 function partPriority(part: A2ACollectedPart): number {
-  return ['text/html', 'text/markdown', 'application/json', 'text/plain'].indexOf(part.mediaType);
+  const index = PART_PRIORITY.indexOf(baseMediaType(part.mediaType));
+  // Unknown types sort last, never first.
+  return index < 0 ? PART_PRIORITY.length : index;
 }
 
 function partText(part: A2ACollectedPart): string {
   if (typeof part.value === 'string') return part.value;
   return JSON.stringify(part.value, null, 2);
+}
+
+// Disambiguates colliding filenames: result.md, result-2.md, result-3.md …
+function uniqueSegment(name: string, taken: Set<string>): string {
+  if (!taken.has(name)) { taken.add(name); return name; }
+  const dot = name.lastIndexOf('.');
+  const stem = dot > 0 ? name.slice(0, dot) : name;
+  const ext = dot > 0 ? name.slice(dot) : '';
+  for (let n = 2; ; n += 1) {
+    const candidate = `${stem}-${n}${ext}`;
+    if (!taken.has(candidate)) { taken.add(candidate); return candidate; }
+  }
 }
 
 function safeSegment(value: string): string {
@@ -294,12 +370,29 @@ function authParameters(token: string | null): ServiceParameters {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-function authenticatedFetch(token: string | null): typeof fetch {
+// Attaches the bearer token to the trusted origin only, and carries the
+// caller's abort signal into every request the SDK makes — including agent
+// card discovery, which otherwise runs with no timeout at all.
+function scopedFetch(token: string | null, trustedOrigin: string, signal?: AbortSignal): typeof fetch {
   return (input, init) => {
     const headers = new Headers(init?.headers);
-    if (token) headers.set('Authorization', `Bearer ${token}`);
-    return fetch(input, { ...init, headers });
+    if (token && requestOrigin(input) === trustedOrigin) {
+      headers.set('Authorization', `Bearer ${token}`);
+    } else {
+      headers.delete('Authorization');
+    }
+    return fetch(input, { ...init, headers, ...(init?.signal ? {} : signal ? { signal } : {}) });
   };
+}
+
+function requestOrigin(input: RequestInfo | URL): string | null {
+  try {
+    if (typeof input === 'string') return new URL(input).origin;
+    if (input instanceof URL) return input.origin;
+    return new URL(input.url).origin;
+  } catch {
+    return null;
+  }
 }
 
 function sanitizeError(error: unknown, token: string | null): string {

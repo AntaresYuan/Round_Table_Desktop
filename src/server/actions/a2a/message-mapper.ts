@@ -107,8 +107,19 @@ export function applyA2AStreamResponse(
   if (payload.$case === 'task') {
     next.remoteTaskId = payload.value.id || next.remoteTaskId;
     next.remoteContextId = payload.value.contextId || next.remoteContextId;
-    for (const artifact of payload.value.artifacts) addArtifact(next, artifact, false);
-    addMessage(next, payload.value.status?.message);
+    // A Task carries a full, authoritative snapshot of its artifacts. Adding
+    // them alongside what streamed in would duplicate every part, write the
+    // same file twice and emit two artifacts claiming one path — but skipping
+    // them is equally wrong: the adapter fetches this snapshot precisely when
+    // a stream ended non-terminal, where what streamed in may be a partial
+    // chunk. Identified artifacts therefore REPLACE what we already hold.
+    for (const artifact of payload.value.artifacts) {
+      if (artifact.artifactId) {
+        next.parts = next.parts.filter((part) => part.artifactId !== artifact.artifactId);
+      }
+      addArtifact(next, artifact, false);
+    }
+    addMessage(next, payload.value.status?.message, 'narration');
     applyState(next, payload.value.status?.state);
   } else if (payload.$case === 'artifactUpdate') {
     next.remoteTaskId = payload.value.taskId || next.remoteTaskId;
@@ -117,12 +128,12 @@ export function applyA2AStreamResponse(
   } else if (payload.$case === 'statusUpdate') {
     next.remoteTaskId = payload.value.taskId || next.remoteTaskId;
     next.remoteContextId = payload.value.contextId || next.remoteContextId;
-    addMessage(next, payload.value.status?.message);
+    addMessage(next, payload.value.status?.message, 'narration');
     applyState(next, payload.value.status?.state);
   } else if (payload.$case === 'message') {
     next.remoteTaskId = payload.value.taskId || next.remoteTaskId;
     next.remoteContextId = payload.value.contextId || next.remoteContextId;
-    addMessage(next, payload.value);
+    addMessage(next, payload.value, 'deliverable');
     if (!payload.value.taskId) applyState(next, TaskState.TASK_STATE_COMPLETED);
   }
   return next;
@@ -152,18 +163,47 @@ export function isTerminalA2AState(state: A2ATaskBindingState | null): boolean {
 export function materializableA2AParts(parts: A2ACollectedPart[]): A2ACollectedPart[] {
   return parts.filter((part) =>
     (part.kind === 'text' || part.kind === 'data')
-    && A2A_OUTPUT_MODES.includes(part.mediaType),
+    && A2A_OUTPUT_MODES.includes(baseMediaType(part.mediaType)),
   );
+}
+
+// Remote agents routinely stamp parameters on the media type
+// (`text/plain; charset=utf-8`). Compare on the bare type/subtype so a
+// perfectly good artifact is not discarded over a charset.
+export function baseMediaType(value: string): string {
+  return value.split(';')[0]?.trim().toLowerCase() ?? '';
 }
 
 function addArtifact(output: A2AOutputAccumulator, artifact: Artifact, append: boolean): void {
   for (const part of artifact.parts) addPart(output, part, artifact.artifactId, artifact.name, append);
 }
 
-function addMessage(output: A2AOutputAccumulator, message: Message | undefined): void {
+/**
+ * Two kinds of message reach this function and they are not interchangeable:
+ *
+ * - `status.message` is the agent's narration ("Reading the handoff…").
+ *   Materializing it would write chatter into the workspace as if it were the
+ *   product, and successive ones share a fallback filename so they clobber
+ *   each other. Narration goes to the event stream; only parts carrying an
+ *   explicit filename are kept, as genuine attachments.
+ *
+ * - A top-level `message` payload IS the deliverable — the shape a
+ *   synchronous agent uses when it has an answer and no task to track. Every
+ *   part of it must stay materializable, filename or not, or the run reports
+ *   success while handing downstream tasks a placeholder.
+ */
+function addMessage(
+  output: A2AOutputAccumulator,
+  message: Message | undefined,
+  kind: 'deliverable' | 'narration',
+): void {
   if (!message) return;
   for (const part of message.parts) {
-    addPart(output, part, null, part.filename || 'message.txt', false);
+    if (kind === 'deliverable') {
+      addPart(output, part, null, part.filename || 'message.md', false);
+    } else if (part.filename) {
+      addPart(output, part, null, part.filename, false);
+    }
     if (part.content?.$case === 'text' && part.content.value.trim()) {
       output.events.push({ type: 'text_delta', delta: part.content.value });
     }

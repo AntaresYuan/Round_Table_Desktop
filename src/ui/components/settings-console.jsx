@@ -95,7 +95,10 @@ function SettingsConsole() {
             ...(provider.apiKeyDraft.trim() ? { apiKey: provider.apiKeyDraft.trim() } : {}),
             ...(provider.clearApiKey ? { clearApiKey: true } : {}),
           })),
-          a2aAgents: draft.a2aAgents.map((agent) => ({
+          // Only agents the user actually touched. Posting every seat on every
+          // save writes an empty row for each one, and an empty saved row
+          // shadows ROUNDTABLE_A2A_URL_* for that seat from then on.
+          a2aAgents: draft.a2aAgents.filter(isA2AAgentEdited).map((agent) => ({
             agentId: agent.agentId,
             enabled: agent.enabled,
             baseUrl: agent.baseUrl,
@@ -323,6 +326,14 @@ function A2AAgentCard({ agent, onPatch }) {
   );
 }
 
+function isA2AAgentEdited(agent) {
+  if (agent.authTokenDraft.trim() || agent.clearAuthToken) return true;
+  const saved = agent.saved || {};
+  return agent.enabled !== saved.enabled
+    || agent.baseUrl !== saved.baseUrl
+    || agent.cardPath !== saved.cardPath;
+}
+
 function SectionHead({ title }) {
   return (
     <div style={{ height: 40, display: 'flex', alignItems: 'center', padding: '0 12px',
@@ -353,6 +364,8 @@ function toDraft(state) {
       ...agent,
       authTokenDraft: '',
       clearAuthToken: false,
+      // Snapshot of what the server sent, to detect real edits on save.
+      saved: { enabled: agent.enabled, baseUrl: agent.baseUrl, cardPath: agent.cardPath },
     })),
   };
 }
