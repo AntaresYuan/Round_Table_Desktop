@@ -1,0 +1,222 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A50000000000000000000092 /* WorkflowLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000092; };
+		A50000000000000000000091 /* WorkflowEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000091; };
+		A10000000000000000000092 /* WorkflowLibraryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000092; };
+		A10000000000000000000091 /* WorkflowEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000091; };
+		A80000000000000000000001 /* workflow-builtins.json in Resources */ = {isa = PBXBuildFile; fileRef = F80000000000000000000001; };
+		A10000000000000000000001 /* RoundTableAppBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000001; };
+		A10000000000000000000002 /* RoundTableBootstrapXPCProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000002; };
+		A10000000000000000000003 /* BootstrapXPCSmoke.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000003; };
+		A10000000000000000000004 /* HostRuntimeDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000004; };
+		A10000000000000000000005 /* HostRuntimeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000005; };
+		A10000000000000000000006 /* HostRuntimeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000006; };
+		A10000000000000000000007 /* HostRuntimeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000007; };
+		A10000000000000000000008 /* MacOSServiceUIDV1Contract.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000008; };
+		A10000000000000000000009 /* StrictJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000009; };
+		A1000000000000000000000A /* MacOSHostRuntimeV1Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1000000000000000000000A; };
+		A1000000000000000000000B /* MacOSServiceUIDV1Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1000000000000000000000B; };
+		A20000000000000000000001 /* RoundTableBootstrapXPCProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000002; };
+		A20000000000000000000002 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000000000000000000001; };
+		A20000000000000000000003 /* HostRuntimeDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000004; };
+		A20000000000000000000004 /* HostRuntimeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000005; };
+		A20000000000000000000005 /* HostRuntimeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000006; };
+		A20000000000000000000006 /* HostRuntimeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000007; };
+		A20000000000000000000007 /* StrictJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000009; };
+		A20000000000000000000008 /* MacOSHostRuntimeV1Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1000000000000000000000A; };
+		A20000000000000000000009 /* HostRuntimeResponseCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000001; };
+		A2000000000000000000000A /* ProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000002; };
+		A2000000000000000000000B /* RuntimeAdmission.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000003; };
+		A2000000000000000000000C /* RuntimeDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000004; };
+		A2000000000000000000000D /* RuntimeSessionRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000005; };
+		A2000000000000000000000E /* WorkspaceGrantRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000006; };
+		A2000000000000000000000F /* XPCPeerPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000007; };
+		A20000000000000000000010 /* ContractValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000008; };
+		A10000000000000000000012 /* ContractValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000008; };
+		A10000000000000000000013 /* HostRuntimeResponseCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000001; };
+		A10000000000000000000014 /* HostRuntimeClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000012; };
+		A10000000000000000000015 /* TurnStreamContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000009; };
+		A20000000000000000000011 /* TurnStreamContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000009; };
+		A20000000000000000000012 /* RoundTableOrchestration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000000000000000000010; };
+		A90000000000000000000001 /* feature-builder-local-dispatch.timeline.json in Resources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000001; };
+		A30000000000000000000001 /* RoundTableHostRuntimeBootstrap.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = P20000000000000000000001; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A40000000000000000000001 /* mira.png in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000001; };
+		A40000000000000000000002 /* atlas.png in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000002; };
+		A40000000000000000000003 /* beam.png in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000003; };
+		A40000000000000000000004 /* vera.png in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000004; };
+		A40000000000000000000005 /* fixer.png in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000005; };
+		A40000000000000000000006 /* planning.png in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000006; };
+		A40000000000000000000007 /* nova.png in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000007; };
+		A1000000000000000000000C /* RoundtableTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1000000000000000000000C; };
+		A1000000000000000000000D /* MissionReplayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1000000000000000000000D; };
+		A1000000000000000000000E /* RoundtableStageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1000000000000000000000E; };
+		A1000000000000000000000F /* WorkflowDockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1000000000000000000000F; };
+		A50000000000000000000001 /* RoundtableTurn.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000001; };
+		A50000000000000000000002 /* SceneProjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000002; };
+		A50000000000000000000003 /* TurnSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000003; };
+		A50000000000000000000004 /* RoomLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000004; };
+		A40000000000000000000008 /* you.png in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000008; };
+		A60000000000000000000001 /* feature-builder-local-dispatch.timeline.json in Resources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000001; };
+		A10000000000000000000010 /* MissionChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000010; };
+		A50000000000000000000005 /* MissionThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000005; };
+		A10000000000000000000011 /* WorkbenchChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000011; };
+		A50000000000000000000006 /* Workbench.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000006; };
+		A70000000000000000000001 /* IBMPlexSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000001; };
+		A70000000000000000000002 /* IBMPlexSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000002; };
+		A70000000000000000000003 /* IBMPlexSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000003; };
+		A70000000000000000000004 /* IBMPlexSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000004; };
+		A70000000000000000000005 /* IBMPlexSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000005; };
+		A70000000000000000000006 /* IBMPlexMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000006; };
+		A70000000000000000000007 /* IBMPlexMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000007; };
+		A70000000000000000000008 /* IBMPlexMono-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000008; };
+		A70000000000000000000009 /* IBMPlexMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000009; };
+		A70000000000000000000010 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000010; };
+		A60000000000000000000002 /* feature-builder-synthetic-live.timeline.json in Resources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000002; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D10000000000000000000001 = {isa = PBXContainerItemProxy; containerPortal = B00000000000000000000001; proxyType = 1; remoteGlobalIDString = T20000000000000000000001; remoteInfo = RoundTableHostRuntimeBootstrap; };
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C10000000000000000000001 = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = Contents/XPCServices; dstSubfolderSpec = 1; files = (A30000000000000000000001, ); name = "Embed XPC Services"; runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F10000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundTableAppBootstrap.swift; sourceTree = "<group>"; };
+		F10000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundTableBootstrapXPCProtocol.swift; sourceTree = "<group>"; };
+		F10000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootstrapXPCSmoke.swift; sourceTree = "<group>"; };
+		F10000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostRuntimeDTOs.swift; sourceTree = "<group>"; };
+		F10000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostRuntimeRequest.swift; sourceTree = "<group>"; };
+		F10000000000000000000006 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostRuntimeResponse.swift; sourceTree = "<group>"; };
+		F10000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostRuntimeSession.swift; sourceTree = "<group>"; };
+		F10000000000000000000008 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOSServiceUIDV1Contract.swift; sourceTree = "<group>"; };
+		F10000000000000000000009 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrictJSON.swift; sourceTree = "<group>"; };
+		F1000000000000000000000A = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOSHostRuntimeV1Generated.swift; sourceTree = "<group>"; };
+		F1000000000000000000000B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOSServiceUIDV1Generated.swift; sourceTree = "<group>"; };
+		F20000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		FC0000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostRuntimeResponseCodec.swift; sourceTree = "<group>"; };
+		FC0000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderRegistry.swift; sourceTree = "<group>"; };
+		FC0000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeAdmission.swift; sourceTree = "<group>"; };
+		FC0000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeDispatcher.swift; sourceTree = "<group>"; };
+		FC0000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeSessionRegistry.swift; sourceTree = "<group>"; };
+		FC0000000000000000000006 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceGrantRegistry.swift; sourceTree = "<group>"; };
+		FC0000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCPeerPolicy.swift; sourceTree = "<group>"; };
+		FC0000000000000000000008 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractValidationError.swift; sourceTree = "<group>"; };
+		FC0000000000000000000009 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnStreamContract.swift; sourceTree = "<group>"; };
+		FC0000000000000000000010 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundTableOrchestration.swift; sourceTree = "<group>"; };
+		F30000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RoundTableNativeApp-Info.plist"; sourceTree = "<group>"; };
+		F30000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RoundTableNativeApp.entitlements; sourceTree = "<group>"; };
+		F30000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RoundTableHostRuntimeBootstrap-Info.plist"; sourceTree = "<group>"; };
+		F30000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RoundTableHostRuntimeBootstrap.entitlements; sourceTree = "<group>"; };
+		F30000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "RoundTableNativeApp-Release.entitlements"; sourceTree = "<group>"; };
+		P10000000000000000000001 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Round Table.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		P20000000000000000000001 = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = RoundTableHostRuntimeBootstrap.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
+		F40000000000000000000001 /* mira.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mira.png; sourceTree = "<group>"; };
+		F40000000000000000000002 /* atlas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atlas.png; sourceTree = "<group>"; };
+		F40000000000000000000003 /* beam.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beam.png; sourceTree = "<group>"; };
+		F40000000000000000000004 /* vera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vera.png; sourceTree = "<group>"; };
+		F40000000000000000000005 /* fixer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fixer.png; sourceTree = "<group>"; };
+		F40000000000000000000006 /* planning.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = planning.png; sourceTree = "<group>"; };
+		F40000000000000000000007 /* nova.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nova.png; sourceTree = "<group>"; };
+		F1000000000000000000000C = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundtableTheme.swift; sourceTree = "<group>"; };
+		F1000000000000000000000D = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionReplayModel.swift; sourceTree = "<group>"; };
+		F1000000000000000000000E = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundtableStageView.swift; sourceTree = "<group>"; };
+		F1000000000000000000000F = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkflowDockView.swift; sourceTree = "<group>"; };
+		F50000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundtableTurn.swift; sourceTree = "<group>"; };
+		F50000000000000000000091 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkflowEditor.swift; sourceTree = "<group>"; };
+		F50000000000000000000092 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkflowLibrary.swift; sourceTree = "<group>"; };
+		F50000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneProjector.swift; sourceTree = "<group>"; };
+		F50000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnSource.swift; sourceTree = "<group>"; };
+		F50000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomLayout.swift; sourceTree = "<group>"; };
+		F40000000000000000000008 /* you.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = you.png; sourceTree = "<group>"; };
+		F80000000000000000000001 /* workflow-builtins.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "workflow-builtins.json"; sourceTree = "<group>"; };
+		F60000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = text.json; path = "feature-builder-local-dispatch.timeline.json"; sourceTree = "<group>"; };
+		F10000000000000000000010 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionChatView.swift; sourceTree = "<group>"; };
+		F50000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionThread.swift; sourceTree = "<group>"; };
+		F10000000000000000000091 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkflowEditorView.swift; sourceTree = "<group>"; };
+		F10000000000000000000092 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkflowLibraryModel.swift; sourceTree = "<group>"; };
+		F10000000000000000000011 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkbenchChrome.swift; sourceTree = "<group>"; };
+		F10000000000000000000012 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostRuntimeClient.swift; sourceTree = "<group>"; };
+		F50000000000000000000006 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workbench.swift; sourceTree = "<group>"; };
+		F70000000000000000000001 /* IBMPlexSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexSans-Regular.ttf; sourceTree = "<group>"; };
+		F70000000000000000000002 /* IBMPlexSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexSans-Medium.ttf; sourceTree = "<group>"; };
+		F70000000000000000000003 /* IBMPlexSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexSans-SemiBold.ttf; sourceTree = "<group>"; };
+		F70000000000000000000004 /* IBMPlexSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexSans-Bold.ttf; sourceTree = "<group>"; };
+		F70000000000000000000005 /* IBMPlexSans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexSans-Italic.ttf; sourceTree = "<group>"; };
+		F70000000000000000000006 /* IBMPlexMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexMono-Regular.ttf; sourceTree = "<group>"; };
+		F70000000000000000000007 /* IBMPlexMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexMono-Medium.ttf; sourceTree = "<group>"; };
+		F70000000000000000000008 /* IBMPlexMono-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexMono-SemiBold.ttf; sourceTree = "<group>"; };
+		F70000000000000000000009 /* IBMPlexMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexMono-Bold.ttf; sourceTree = "<group>"; };
+		F70000000000000000000010 /* OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
+		F60000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = text.json; path = "feature-builder-synthetic-live.timeline.json"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		K10000000000000000000001 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		K20000000000000000000001 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		G40000000000000000000001 = {isa = PBXGroup; name = Resources; path = Resources; sourceTree = "<group>"; children = (G40000000000000000000002, G70000000000000000000001, F80000000000000000000001, ); };
+		G70000000000000000000001 = {isa = PBXGroup; name = Fonts; path = fonts; sourceTree = "<group>"; children = (F70000000000000000000001, F70000000000000000000002, F70000000000000000000003, F70000000000000000000004, F70000000000000000000005, F70000000000000000000006, F70000000000000000000007, F70000000000000000000008, F70000000000000000000009, F70000000000000000000010, ); };
+		G40000000000000000000002 = {isa = PBXGroup; name = Avatars; path = avatars; sourceTree = "<group>"; children = (F40000000000000000000001, F40000000000000000000002, F40000000000000000000003, F40000000000000000000004, F40000000000000000000005, F40000000000000000000006, F40000000000000000000007, F40000000000000000000008, ); };
+		G00000000000000000000001 = {isa = PBXGroup; children = (G10000000000000000000001, G10000000000000000000002, G10000000000000000000003, GC0000000000000000000001, G20000000000000000000001, G30000000000000000000001, G40000000000000000000001, G50000000000000000000001, G60000000000000000000001, G90000000000000000000001, ); sourceTree = "<group>"; };
+		G10000000000000000000001 = {isa = PBXGroup; name = RoundTableNativeApp; path = Sources/RoundTableAppBootstrap; sourceTree = "<group>"; children = (F10000000000000000000001, F10000000000000000000012, F1000000000000000000000C, F1000000000000000000000D, F1000000000000000000000E, F1000000000000000000000F, F10000000000000000000010, F10000000000000000000011, F10000000000000000000092, F10000000000000000000091, ); };
+		G10000000000000000000002 = {isa = PBXGroup; name = BootstrapXPC; path = Sources/RoundTableBootstrapXPC; sourceTree = "<group>"; children = (F10000000000000000000002, F10000000000000000000003, ); };
+		G10000000000000000000003 = {isa = PBXGroup; name = RoundTableContracts; path = Sources/RoundTableContracts; sourceTree = "<group>"; children = (FC0000000000000000000008, F10000000000000000000004, F10000000000000000000005, F10000000000000000000006, F10000000000000000000007, F10000000000000000000008, F10000000000000000000009, FC0000000000000000000001, FC0000000000000000000009, G10000000000000000000004, ); };
+		G10000000000000000000004 = {isa = PBXGroup; name = Generated; path = Generated; sourceTree = "<group>"; children = (F1000000000000000000000A, F1000000000000000000000B, ); };
+		G20000000000000000000001 = {isa = PBXGroup; name = RoundTableHostRuntimeBootstrap; path = Sources/RoundTableHostRuntimeBootstrap; sourceTree = "<group>"; children = (F20000000000000000000001, FC0000000000000000000007, ); };
+		GC0000000000000000000001 = {isa = PBXGroup; name = RoundTableHostRuntimeCore; path = Sources/RoundTableHostRuntimeCore; sourceTree = "<group>"; children = (FC0000000000000000000002, FC0000000000000000000010, FC0000000000000000000003, FC0000000000000000000004, FC0000000000000000000005, FC0000000000000000000006, ); };
+		G30000000000000000000001 = {isa = PBXGroup; name = Configuration; path = Configuration; sourceTree = "<group>"; children = (F30000000000000000000001, F30000000000000000000002, F30000000000000000000005, F30000000000000000000003, F30000000000000000000004, ); };
+		G90000000000000000000001 = {isa = PBXGroup; name = Products; children = (P10000000000000000000001, P20000000000000000000001, ); sourceTree = "<group>"; };
+		G50000000000000000000001 = {isa = PBXGroup; name = RoundTableScene; path = Sources/RoundTableScene; sourceTree = "<group>"; children = (F50000000000000000000001, F50000000000000000000002, F50000000000000000000092, F50000000000000000000091, F50000000000000000000003, F50000000000000000000004, F50000000000000000000005, F50000000000000000000006, ); };
+		G60000000000000000000001 = {isa = PBXGroup; name = ReplayFixtures; path = Tests/Fixtures/TurnTimelines; sourceTree = "<group>"; children = (F60000000000000000000001, F60000000000000000000002, ); };
+/* End PBXGroup section */
+
+/* Begin PBXResourcesBuildPhase section */
+		R10000000000000000000001 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A80000000000000000000001, A40000000000000000000001, A40000000000000000000002, A40000000000000000000003, A40000000000000000000004, A40000000000000000000005, A40000000000000000000006, A40000000000000000000007, A40000000000000000000008, A60000000000000000000001, A60000000000000000000002, A70000000000000000000001, A70000000000000000000002, A70000000000000000000003, A70000000000000000000004, A70000000000000000000005, A70000000000000000000006, A70000000000000000000007, A70000000000000000000008, A70000000000000000000009, A70000000000000000000010, ); runOnlyForDeploymentPostprocessing = 0; };
+		R20000000000000000000001 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A90000000000000000000001, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		T10000000000000000000001 = {isa = PBXNativeTarget; buildConfigurationList = L10000000000000000000001; buildPhases = (S10000000000000000000001, K10000000000000000000001, C10000000000000000000001, R10000000000000000000001, ); buildRules = (); dependencies = (D20000000000000000000001, ); name = RoundTableNative; productName = "Round Table"; productReference = P10000000000000000000001; productType = "com.apple.product-type.application"; };
+		T20000000000000000000001 = {isa = PBXNativeTarget; buildConfigurationList = L20000000000000000000001; buildPhases = (S20000000000000000000001, K20000000000000000000001, R20000000000000000000001, ); buildRules = (); dependencies = (); name = RoundTableHostRuntimeBootstrap; productName = RoundTableHostRuntimeBootstrap; productReference = P20000000000000000000001; productType = "com.apple.product-type.xpc-service"; };
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B00000000000000000000001 = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = YES; LastSwiftUpdateCheck = 1600; LastUpgradeCheck = 1600; TargetAttributes = {T10000000000000000000001 = {CreatedOnToolsVersion = 16.0; }; T20000000000000000000001 = {CreatedOnToolsVersion = 16.0; }; }; }; buildConfigurationList = L00000000000000000000001; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base, ); mainGroup = G00000000000000000000001; productRefGroup = G90000000000000000000001; projectDirPath = ""; projectRoot = ""; targets = (T10000000000000000000001, T20000000000000000000001, ); };
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		S10000000000000000000001 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001, A10000000000000000000014, A10000000000000000000002, A10000000000000000000003, A10000000000000000000004, A10000000000000000000005, A10000000000000000000006, A10000000000000000000007, A10000000000000000000008, A10000000000000000000009, A1000000000000000000000A, A1000000000000000000000B, A1000000000000000000000C, A1000000000000000000000D, A1000000000000000000000E, A1000000000000000000000F, A50000000000000000000001, A50000000000000000000002, A50000000000000000000092, A50000000000000000000091, A50000000000000000000003, A50000000000000000000004, A10000000000000000000010, A50000000000000000000005, A10000000000000000000011, A10000000000000000000092, A10000000000000000000091, A50000000000000000000006, A10000000000000000000012, A10000000000000000000013, A10000000000000000000015, ); runOnlyForDeploymentPostprocessing = 0; };
+		S20000000000000000000001 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A20000000000000000000001, A20000000000000000000002, A20000000000000000000003, A20000000000000000000004, A20000000000000000000005, A20000000000000000000006, A20000000000000000000007, A20000000000000000000008, A20000000000000000000009, A2000000000000000000000A, A2000000000000000000000B, A2000000000000000000000C, A2000000000000000000000D, A2000000000000000000000E, A2000000000000000000000F, A20000000000000000000010, A20000000000000000000011, A20000000000000000000012, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D20000000000000000000001 = {isa = PBXTargetDependency; target = T20000000000000000000001; targetProxy = D10000000000000000000001; };
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		Q00000000000000000000001 = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 13.0; SDKROOT = macosx; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG; SWIFT_VERSION = 6.0; }; name = Debug; };
+		Q00000000000000000000002 = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 13.0; SDKROOT = macosx; SWIFT_VERSION = 6.0; }; name = Release; };
+		Q10000000000000000000001 = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = Configuration/RoundTableNativeApp.entitlements; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; DEVELOPMENT_ASSET_PATHS = ""; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = "Configuration/RoundTableNativeApp-Info.plist"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks"; MARKETING_VERSION = 0.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.roundtable.desktop; PRODUCT_NAME = "Round Table"; SWIFT_STRICT_CONCURRENCY = minimal; }; name = Debug; };
+		Q10000000000000000000002 = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = "Configuration/RoundTableNativeApp-Release.entitlements"; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; ENABLE_HARDENED_RUNTIME = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = "Configuration/RoundTableNativeApp-Info.plist"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks"; MARKETING_VERSION = 0.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.roundtable.desktop; PRODUCT_NAME = "Round Table"; SWIFT_STRICT_CONCURRENCY = minimal; }; name = Release; };
+		Q20000000000000000000001 = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = Configuration/RoundTableHostRuntimeBootstrap.entitlements; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = "Configuration/RoundTableHostRuntimeBootstrap-Info.plist"; MARKETING_VERSION = 0.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.roundtable.desktop.host-runtime; PRODUCT_NAME = RoundTableHostRuntimeBootstrap; SKIP_INSTALL = YES; SWIFT_STRICT_CONCURRENCY = minimal; }; name = Debug; };
+		Q20000000000000000000002 = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = Configuration/RoundTableHostRuntimeBootstrap.entitlements; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; ENABLE_HARDENED_RUNTIME = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = "Configuration/RoundTableHostRuntimeBootstrap-Info.plist"; MARKETING_VERSION = 0.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.roundtable.desktop.host-runtime; PRODUCT_NAME = RoundTableHostRuntimeBootstrap; SKIP_INSTALL = YES; SWIFT_STRICT_CONCURRENCY = minimal; }; name = Release; };
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		L00000000000000000000001 = {isa = XCConfigurationList; buildConfigurations = (Q00000000000000000000001, Q00000000000000000000002, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		L10000000000000000000001 = {isa = XCConfigurationList; buildConfigurations = (Q10000000000000000000001, Q10000000000000000000002, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		L20000000000000000000001 = {isa = XCConfigurationList; buildConfigurations = (Q20000000000000000000001, Q20000000000000000000002, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+/* End XCConfigurationList section */
+	};
+	rootObject = B00000000000000000000001;
+}

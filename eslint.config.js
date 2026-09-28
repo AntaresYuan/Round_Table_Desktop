@@ -4,9 +4,12 @@ export default tseslint.config(
   {
     ignores: [
       'node_modules/**',
-      'dist/**',
-      'build/**',
-      '.next/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/.next/**',
+      '**/out/**',
+      '**/release/**',
+      '**/.vite/**',
       'next-env.d.ts',
       'coverage/**',
       '.roundtable/**',
@@ -23,6 +26,12 @@ export default tseslint.config(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+    },
+  },
+  {
+    files: ['apps/desktop/scripts/*.cjs'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 );

@@ -1,0 +1,52 @@
+{
+  "contract": "macos-service-uid-v1",
+  "version": 1,
+  "maxConcurrency": 1,
+  "secretTransport": "inherited-fd-once",
+  "requests": ["prepare", "start", "stop", "status", "cleanup"],
+  "requestKeySets": {
+    "status": ["backend", "protocolVersion", "requestId", "type"],
+    "prepare": ["backend", "protocolVersion", "requestId", "type", "leaseId", "executionId", "workload", "workspaceGrant", "secretChannel"],
+    "start": ["backend", "protocolVersion", "requestId", "type", "leaseId", "executionId", "preparationId"],
+    "stop": ["backend", "protocolVersion", "requestId", "type", "leaseId", "executionId", "reason"],
+    "cleanup": ["backend", "protocolVersion", "requestId", "type", "leaseId", "executionId", "disposition"]
+  },
+  "nestedKeySets": {
+    "workload.provider": ["kind", "provider"],
+    "workload.fixture": ["kind", "fixture"],
+    "workspaceGrant": ["grantId", "revision"],
+    "secretChannel": ["channelId", "transport", "fdIndex", "consumption"]
+  },
+  "responseKeySets": {
+    "status.success": ["backend", "protocolVersion", "requestId", "serviceInstanceId", "brokerUid", "executionUid", "type", "ok", "maxConcurrency", "secretTransport", "seat"],
+    "prepare.success": ["backend", "protocolVersion", "requestId", "serviceInstanceId", "brokerUid", "executionUid", "type", "ok", "leaseId", "executionId", "preparationId", "secretChannelState", "seat"],
+    "start.success": ["backend", "protocolVersion", "requestId", "serviceInstanceId", "brokerUid", "executionUid", "type", "ok", "leaseId", "executionId", "runId", "seat"],
+    "stop.success": ["backend", "protocolVersion", "requestId", "serviceInstanceId", "brokerUid", "executionUid", "type", "ok", "leaseId", "executionId", "treeTermination", "seatUidProcessState", "seat"],
+    "cleanup.success": ["backend", "protocolVersion", "requestId", "serviceInstanceId", "brokerUid", "executionUid", "type", "ok", "leaseId", "executionId", "treeTermination", "seatUidProcessState", "secretResidue", "seat"],
+    "failure": ["backend", "protocolVersion", "requestId", "serviceInstanceId", "brokerUid", "executionUid", "type", "ok", "error", "seat"]
+  },
+  "seatKeySet": ["state", "leaseId", "executionId"],
+  "transportRules": {
+    "fdKey": "secretChannelFd",
+    "fdType": "XPC_TYPE_FD",
+    "fdAllowedRequest": "prepare",
+    "fdCount": 1,
+    "fdIndex": 0,
+    "consumption": "once"
+  },
+  "workloads": ["provider:codex", "provider:claude-code", "fixture:lifecycle-v1"],
+  "seatStates": ["idle", "prepared", "running", "stopped", "quarantined"],
+  "cleanupDisposition": "terminate-and-scrub",
+  "stopReasons": ["requested", "shutdown", "timeout"],
+  "errors": [
+    "seat_busy",
+    "lease_invalid",
+    "workspace_grant_invalid",
+    "workload_invalid",
+    "secret_channel_invalid",
+    "cleanup_unconfirmed",
+    "internal_failure",
+    "unauthorized",
+    "invalid_request"
+  ]
+}

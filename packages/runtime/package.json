@@ -1,0 +1,31 @@
+{
+  "name": "@roundtable/runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build:native": "node ./scripts/build-native-helper.mjs",
+    "build:native:service-uid-v1-status": "node ./scripts/build-service-uid-v1-status.mjs",
+    "generate:service-uid-contract": "node ./scripts/generate-service-uid-v1-contract.mjs",
+    "verify:native:service-uid-v1-status": "node ./scripts/verify-service-uid-v1-status-manifest.mjs",
+    "build:native:service-uid-bootstrap-probe:dev": "node ./scripts/build-service-uid-xpc.mjs --mode development-adhoc --output-dir \"$PWD/build/service-uid-bootstrap-probe-v0\"",
+    "prebuild": "node ./scripts/build-native-helper.mjs",
+    "build": "tsc -p tsconfig.json",
+    "pretest": "node ./scripts/build-native-helper.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.6"
+  }
+}

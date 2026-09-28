@@ -28,17 +28,118 @@ jobs:
       - name: Typecheck
         run: corepack pnpm typecheck
 
+      - name: Typecheck workspaces
+        run: corepack pnpm typecheck:workspaces
+
       - name: Lint
         run: corepack pnpm lint
 
       - name: Test
         run: corepack pnpm test
 
+      - name: Test workspaces
+        run: corepack pnpm test:workspaces
+
+      - name: Check native turn-scene goldens
+        run: corepack pnpm verify:macos:turn-scenes
+
       - name: Audit
         run: corepack pnpm audit --audit-level moderate
+
+      - name: Build workspaces
+        run: corepack pnpm build:workspaces
+
+      - name: Electron smoke
+        run: xvfb-run -a corepack pnpm test:desktop-smoke
+
+      - name: Runtime containment fails closed on non-darwin
+        run: >-
+          corepack pnpm --filter @roundtable/runtime exec vitest run
+          tests/containment.integration.test.ts
+          --testNamePattern "reports a stable fail-closed capability on unsupported platforms"
 
       - name: Build
         run: corepack pnpm build
         env:
           NEXTAUTH_SECRET: ci-nextauth-secret
           NEXTAUTH_URL: http://localhost:3000
+
+  desktop-runtime-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install
+        run: corepack pnpm install --frozen-lockfile
+
+      - name: Build macOS process guardian
+        run: corepack pnpm --filter @roundtable/runtime build:native
+
+      - name: Check v1 contract generated artifacts
+        run: >-
+          corepack pnpm --filter @roundtable/runtime exec node
+          scripts/generate-service-uid-v1-contract.mjs --check
+
+      - name: Check macOS host runtime contract generated artifacts
+        run: >-
+          corepack pnpm --filter @roundtable/protocol exec node
+          scripts/generate-macos-host-runtime-v1-contract.mjs --check
+
+      - name: Test Swift canonical contracts
+        run: swift test --package-path apps/macos
+
+      - name: Build native macOS app and embedded bootstrap XPC service
+        run: >-
+          xcodebuild
+          -project apps/macos/RoundTableMacOS.xcodeproj
+          -scheme RoundTableNative
+          -configuration Debug
+          -derivedDataPath "$RUNNER_TEMP/RoundTableDerivedData"
+          CODE_SIGN_STYLE=Manual
+          CODE_SIGN_IDENTITY=-
+          AD_HOC_CODE_SIGNING_ALLOWED=YES
+          build
+
+      - name: Smoke native app and bootstrap XPC lifecycle
+        run: >-
+          apps/macos/scripts/smoke-bootstrap-xpc.sh
+          "$RUNNER_TEMP/RoundTableDerivedData/Build/Products/Debug/RoundTableNative.app"
+
+      - name: Test shared macOS host runtime payload fixtures
+        run: >-
+          corepack pnpm --filter @roundtable/protocol exec vitest run
+          tests/macos-host-runtime-payload-fixtures.test.ts
+
+      - name: Build uninstalled v1 service UID status pair
+        run: >-
+          corepack pnpm --filter @roundtable/runtime
+          build:native:service-uid-v1-status
+          --output-dir "$RUNNER_TEMP/roundtable-service-uid-v1-status"
+
+      - name: Verify uninstalled v1 service UID status manifest
+        run: >-
+          corepack pnpm --filter @roundtable/runtime exec node
+          scripts/verify-service-uid-v1-status-manifest.mjs
+          --manifest "$RUNNER_TEMP/roundtable-service-uid-v1-status/manifest.json"
+
+      - name: macOS containment integration
+        run: >-
+          corepack pnpm --filter @roundtable/runtime exec vitest run
+          tests/containment.integration.test.ts
+          tests/macos-native-helper.integration.test.ts
+          tests/macos-coalition-supervisor.integration.test.ts
+          tests/process-supervisor.integration.test.ts
+          tests/runtime.integration.test.ts
+
+      - name: Desktop fixture runtime smoke
+        run: corepack pnpm test:desktop-runtime-smoke

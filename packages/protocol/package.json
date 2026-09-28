@@ -1,0 +1,31 @@
+{
+  "name": "@roundtable/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "generate:macos-host-contract": "node ./scripts/generate-macos-host-runtime-v1-contract.mjs",
+    "verify:macos-host-contract": "node ./scripts/generate-macos-host-runtime-v1-contract.mjs --check",
+    "prebuild": "node ./scripts/generate-macos-host-runtime-v1-contract.mjs --check",
+    "build": "tsc -p tsconfig.json",
+    "pretest": "node ./scripts/generate-macos-host-runtime-v1-contract.mjs --check",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@roundtable/domain": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.6"
+  }
+}

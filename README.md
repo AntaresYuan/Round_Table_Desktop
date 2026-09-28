@@ -112,6 +112,44 @@ corepack pnpm cli workflow smoke --message "Build a waitlist page"
 > needs no API keys — perfect for trying the workbench, CI, and the golden-path
 > demo before wiring up a real agent runtime.
 
+## 🖥️ Desktop migration status
+
+The Web app remains the runnable product while the Desktop app is being built
+in the same monorepo. Desktop shell phases 1–3 are complete; phase 4 is
+currently replacing its first same-user runtime prototype with a real macOS
+privilege boundary. The Desktop app is not yet a signed, installable release.
+The final macOS product target is now SwiftUI/AppKit with a native Swift host
+runtime; Electron remains only as a migration-time behavior baseline and will
+not ship in the final macOS bundle.
+
+The first native contract checks can be run on macOS with:
+
+```bash
+corepack pnpm verify:macos:contracts
+```
+
+The accepted phase 4 design is deliberately stricter than wrapping this Web UI
+in Electron:
+
+- a real local provider runs in one dedicated, non-login, low-privilege macOS
+  service-UID seat; phase 4 allows only one active provider execution;
+- a small signed native broker owns only seat setup, lifecycle, and cleanup —
+  it never runs Node, a provider, a shell command, or repository code as root;
+- providers edit an execution-scoped staging workspace, not the user's live
+  repository; scanned changes are applied by the logged-in user only after the
+  workspace identity, baseline, conflicts, and apply authority are rechecked;
+- Seatbelt remains defense in depth. A sandbox profile or deterministic
+  fixture does not substitute for cross-UID process, secret, and stop canaries.
+
+Phase 4 has a development isolation gate that uses a test-signed broker and a
+controlled administrator harness. Developer ID signing, Hardened Runtime,
+notarization, `SMAppService` approval, upgrades, and uninstall cleanup are a
+separate phase 7 release gate. See the
+[migration route](docs/architecture/desktop-runtime-migration.md),
+[runtime boundaries](docs/architecture/desktop-runtime-boundaries.md), and
+[ADR-002](docs/architecture/adr-002-macos-service-uid-isolation.md) for the
+exact completion criteria.
+
 ## ⚙️ How it works
 
 ```mermaid
@@ -249,14 +287,19 @@ default; set `ROUNDTABLE_SAFETY_ENABLED=false` only for testing.
 
 ## 🗂 Project structure
 
-```
+```text
+apps/
+└── desktop/            # Electron main, preload, renderer, and desktop tests
+packages/
+├── domain/             # shared domain contracts
+├── protocol/           # versioned cross-process schemas
+└── runtime/            # local provider runtime and native containment work
 src/
-├── app/                # Next.js app routes
+├── app/                # current Next.js app routes
 ├── ui/components/      # roundtable, workflow, chat, gallery, inspector UI
-├── server/
-│   ├── actions/        # business workflows shared by tRPC, REST, and CLI
-│   └── store.ts        # local JSON or Postgres persistence
+├── server/             # current Web workflows and persistence adapters
 └── cli/                # smoke tests, migration helpers, local DB tools
+docs/architecture/      # desktop ADRs, migration route, boundaries, test gates
 ```
 
 **Tech stack:** Next.js 15 · React 18 · tRPC · NextAuth · Postgres · Vitest · pnpm

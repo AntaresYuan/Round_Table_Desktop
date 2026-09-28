@@ -1,5 +1,7 @@
 packages:
   - .
+  - apps/*
+  - packages/*
 
 overrides:
   esbuild: 0.25.12
@@ -13,9 +15,9 @@ overrides:
   vite: 6.4.3
 
 onlyBuiltDependencies:
+  - electron
   - esbuild
   - sharp
 
 allowBuilds:
-  esbuild: true
-  sharp: true
+  esbuild: set this to true or false

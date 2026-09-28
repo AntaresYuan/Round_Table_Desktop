@@ -1,6 +1,11 @@
 node_modules/
 .next/
 dist/
+build/
+.build/
+out/
+release/
+.vite/
 coverage/
 .env
 .env.local
