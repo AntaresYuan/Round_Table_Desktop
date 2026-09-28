@@ -1,0 +1,30 @@
+{
+  "name": "@roundtable/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.mjs",
+  "scripts": {
+    "build": "pnpm run build:dependencies && tsc -p tsconfig.build.json",
+    "build:dependencies": "pnpm --filter @roundtable/domain build && pnpm --filter @roundtable/protocol build && pnpm --filter @roundtable/runtime build",
+    "dev": "pnpm run build && electron .",
+    "start": "pnpm run build && electron .",
+    "test": "pnpm run build && vitest run --config vitest.config.ts",
+    "test:codex-containment-smoke": "pnpm run build && node scripts/codex-workspace-containment-smoke.mjs",
+    "test:claude-runtime-smoke": "pnpm run build && node scripts/claude-runtime-electron-smoke.mjs",
+    "test:electron-smoke": "pnpm run build && node scripts/electron-smoke.mjs",
+    "test:runtime-electron-smoke": "pnpm run build && node scripts/runtime-electron-smoke.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@roundtable/protocol": "workspace:*",
+    "@roundtable/runtime": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "electron": "43.4.1",
+    "happy-dom": "20.11.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.6"
+  }
+}

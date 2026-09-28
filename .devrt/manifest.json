@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "tools": [
+    {
+      "name": "roundtable-cli",
+      "command": "corepack pnpm --silent cli workflow smoke --message \"Probe Roundtable workflow\"",
+      "probe": "corepack pnpm --silent cli workflow smoke --message \"Probe Roundtable workflow\"",
+      "tags": ["roundtable", "workflow", "cli"],
+      "capabilities": ["json-output", "real-workflow"]
+    }
+  ],
+  "actions": [
+    {
+      "name": "roundtable.data.reset",
+      "source": "src/cli/action-runner.ts#roundtable.data.reset",
+      "sideEffects": ["reset:local-store"],
+      "command": "corepack pnpm --silent devrt:action",
+      "tags": ["roundtable", "store"],
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "roundtable.workbench.create",
+      "source": "src/server/actions/workbench-actions.ts#createWorkbench",
+      "sideEffects": ["insert:workbench"],
+      "command": "corepack pnpm --silent devrt:action",
+      "tags": ["roundtable", "workbench"],
+      "inputSchema": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "workspacePath": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "roundtable.chat.create",
+      "source": "src/server/actions/chat-actions.ts#createChat",
+      "sideEffects": ["insert:chat"],
+      "command": "corepack pnpm --silent devrt:action",
+      "tags": ["roundtable", "chat"],
+      "inputSchema": {
+        "type": "object",
+        "required": ["workbenchId", "title"],
+        "properties": {
+          "workbenchId": { "type": "string" },
+          "title": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "roundtable.turn.create",
+      "source": "src/server/actions/turn-actions.ts#createTurn",
+      "sideEffects": ["insert:turn", "insert:artifact", "insert:handoff"],
+      "command": "corepack pnpm --silent devrt:action",
+      "tags": ["roundtable", "orchestrator", "planning"],
+      "inputSchema": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": { "type": "string" },
+          "chatId": { "type": "string" },
+          "turnId": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "roundtable.turn.approve",
+      "source": "src/server/actions/turn-actions.ts#approveTurn",
+      "sideEffects": ["update:turn", "insert:dispatch-record", "insert:artifact"],
+      "command": "corepack pnpm --silent devrt:action",
+      "tags": ["roundtable", "approval", "dispatch"],
+      "inputSchema": {
+        "type": "object",
+        "required": ["turnId", "decision"],
+        "properties": {
+          "turnId": { "type": "string" },
+          "decision": { "type": "string", "enum": ["approve", "reject"] },
+          "autoDispatch": { "type": "boolean" },
+          "agentAdapter": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "roundtable.turn.dispatch",
+      "source": "src/server/actions/turn-actions.ts#dispatchTurn",
+      "sideEffects": ["insert:dispatch-record", "insert:artifact"],
+      "command": "corepack pnpm --silent devrt:action",
+      "tags": ["roundtable", "dispatch"],
+      "inputSchema": {
+        "type": "object",
+        "required": ["turnId"],
+        "properties": {
+          "turnId": { "type": "string" },
+          "agentAdapter": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "roundtable.history.list",
+      "source": "src/server/actions/turn-actions.ts#listTurns",
+      "sideEffects": [],
+      "command": "corepack pnpm --silent devrt:action",
+      "tags": ["roundtable", "history"],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chatId": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "roundtable.workflow.smoke",
+      "source": "src/cli/action-runner.ts#roundtable.workflow.smoke",
+      "sideEffects": ["insert:workbench", "insert:chat", "insert:message", "insert:turn", "insert:artifact"],
+      "command": "corepack pnpm --silent devrt:action",
+      "tags": ["roundtable", "workflow", "smoke"],
+      "capabilities": ["real-workflow", "json-output"],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "workbenchName": { "type": "string" },
+          "agentAdapter": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "roundtable-local-workflow",
+      "description": "Create a workbench and chat, plan a user turn, approve dispatch, and verify generated artifacts through the real backend action layer.",
+      "steps": [
+        {
+          "name": "reset",
+          "action": "roundtable.data.reset",
+          "input": {},
+          "expect": [
+            { "path": "result.reset", "equals": true }
+          ]
+        },
+        {
+          "name": "createWorkbench",
+          "action": "roundtable.workbench.create",
+          "input": {
+            "name": "Devrt Product Squad",
+            "workspacePath": "workspaces/devrt-product-squad",
+            "description": "Created by devrt scenario."
+          },
+          "expect": [
+            { "path": "result.workbench.id", "exists": true },
+            { "path": "result.workbench.name", "equals": "Devrt Product Squad" }
+          ]
+        },
+        {
+          "name": "createChat",
+          "action": "roundtable.chat.create",
+          "input": {
+            "workbenchId": "${createWorkbench.result.workbench.id}",
+            "title": "Build waitlist flow"
+          },
+          "expect": [
+            { "path": "result.chat.id", "exists": true },
+            { "path": "result.chat.workbenchId", "matches": "^wb_" }
+          ]
+        },
+        {
+          "name": "createTurn",
+          "action": "roundtable.turn.create",
+          "input": {
+            "chatId": "${createChat.result.chat.id}",
+            "message": "Build a waitlist page and produce a reviewer pass."
+          },
+          "expect": [
+            { "path": "result.turn.id", "exists": true },
+            { "path": "result.turn.approvalStatus", "equals": "pending" },
+            { "path": "result.turn.plan.tasks", "length": 3 }
+          ]
+        },
+        {
+          "name": "approveTurn",
+          "action": "roundtable.turn.approve",
+          "input": {
+            "turnId": "${createTurn.result.turn.id}",
+            "decision": "approve",
+            "autoDispatch": true,
+            "agentAdapter": "local-dispatch"
+          },
+          "expect": [
+            { "path": "result.approval.approvalStatus", "equals": "approved" },
+            { "path": "result.approval.dispatchStatus", "equals": "completed" },
+            { "path": "result.approval.records", "length": 3 },
+            { "path": "result.approval.artifacts", "lengthMin": 5 }
+          ]
+        },
+        {
+          "name": "history",
+          "action": "roundtable.history.list",
+          "input": {
+            "chatId": "${createChat.result.chat.id}"
+          },
+          "expect": [
+            { "path": "result.count", "min": 1 },
+            { "path": "result.turns.0.dispatchStatus", "equals": "completed" }
+          ]
+        }
+      ],
+      "cleanup": [
+        {
+          "name": "resetAfterScenario",
+          "action": "roundtable.data.reset",
+          "input": {}
+        }
+      ]
+    }
+  ],
+  "verify": [
+    {
+      "name": "typecheck",
+      "command": "corepack pnpm typecheck",
+      "timeoutMs": 120000
+    },
+    {
+      "name": "unit-workflow",
+      "command": "corepack pnpm test",
+      "timeoutMs": 120000
+    }
+  ]
+}

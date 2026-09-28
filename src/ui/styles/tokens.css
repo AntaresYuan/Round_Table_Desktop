@@ -1,0 +1,267 @@
+/* ============================================================================
+   Roundtable — design tokens
+   3 aesthetics  ×  light/dark  ×  density.  Driven by attributes on <html>:
+     data-aesthetic = document | neutral | technical
+     data-theme     = light | dark
+     data-density   = roomy | balanced | compact
+   Per-agent color is DATA-DRIVEN (passed as a `color` prop). The role vars below
+   are only the default palette + the gallery legend.
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* default 5-role palette — refined, evenly-spaced jewels (overridable per-agent) */
+  --role-architect:   #9579b0;
+  --role-planner:     #5f86b8;
+  --role-implementer: #5a9e8c;
+  --role-reviewer:    #bd9a55;
+  --role-fixer:       #c47766;
+
+  /* status hues (aligned to the role palette) */
+  --ok:   #5a9e8c;
+  --run:  #5f86b8;
+  --warn: #bd9a55;
+  --bad:  #c47766;
+
+  /* structural defaults (overridden per-aesthetic) */
+  --r-card: 14px;
+  --r-chip: 999px;
+  --r-sm: 8px;
+  --shadow-card: 0 1px 2px rgba(20,20,30,.04), 0 8px 24px -12px rgba(20,20,30,.12);
+  --shadow-pop: 0 12px 40px -8px rgba(20,20,30,.28);
+  --hair: 1px;
+
+  /* density — set by [data-density] */
+  --pad: 18px;
+  --gap: 14px;
+  --thread-gap: 22px;
+  --fs: 15px;
+  --lh: 1.62;
+
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ----- density ----------------------------------------------------------- */
+[data-density="roomy"]    { --pad: 22px; --gap: 16px; --thread-gap: 28px; --fs: 15.5px; --lh: 1.68; }
+[data-density="balanced"] { --pad: 18px; --gap: 14px; --thread-gap: 22px; --fs: 15px;   --lh: 1.62; }
+[data-density="compact"]  { --pad: 13px; --gap: 10px; --thread-gap: 15px; --fs: 13.5px; --lh: 1.52; }
+
+/* ============================================================================
+   AESTHETIC 1 — WARM DOCUMENT  (paper-like, serif prose, roomy)
+   ============================================================================ */
+[data-aesthetic="document"] {
+  --font-ui:    "IBM Plex Sans", system-ui, sans-serif;
+  --font-prose: "IBM Plex Serif", Georgia, serif;
+  --font-mono:  "IBM Plex Mono", ui-monospace, monospace;
+  --r-card: 14px; --r-sm: 9px;
+  --shadow-card: 0 1px 2px rgba(60,42,20,.05), 0 10px 30px -16px rgba(60,42,20,.18);
+  --prose-size: 1.02em; --prose-tracking: 0;
+  --accent: #b4632a;
+}
+[data-aesthetic="document"][data-theme="light"] {
+  --bg:        #f4efe6;
+  --surface:   #fbf8f1;
+  --surface-2: #f0e9da;
+  --surface-3: #e9e0cd;
+  --border:    #e4d9c4;
+  --border-strong: #d2c3a6;
+  --text:      #2f2920;
+  --text-muted:#7c705c;
+  --text-faint:#a99c84;
+  --pm:        #8a7d66;
+}
+[data-aesthetic="document"][data-theme="dark"] {
+  --bg:        #1a1713;
+  --surface:   #221d17;
+  --surface-2: #2a241c;
+  --surface-3: #332b21;
+  --border:    #38301f;
+  --border-strong:#4a4030;
+  --text:      #f0e9da;
+  --text-muted:#b3a589;
+  --text-faint:#857a64;
+  --pm:        #b3a589;
+  --accent:    #e08a4f;
+  --shadow-card: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -16px rgba(0,0,0,.6);
+}
+
+/* ============================================================================
+   AESTHETIC 2 — CLEAN NEUTRAL  (soft whites, light shadows — Marvis-ish)
+   ============================================================================ */
+[data-aesthetic="neutral"] {
+  --font-ui:    "IBM Plex Sans", system-ui, sans-serif;
+  --font-prose: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono:  "IBM Plex Mono", ui-monospace, monospace;
+  --r-card: 10px; --r-sm: 6px;
+  --shadow-card: 0 1px 2px rgba(40,36,30,.05), 0 6px 20px -10px rgba(40,36,30,.13);
+  --prose-size: 1em; --prose-tracking: -0.005em;
+  /* 紫陽花 / Hydrangea — chosen palette (blue → lavender, dreamy summer) */
+  --accent: #7e72c9;
+}
+[data-aesthetic="neutral"][data-theme="light"] {
+  --bg:        #eeeaf6;
+  --surface:   #ffffff;
+  --surface-2: #f5f2fb;
+  --surface-3: #ebe6f4;
+  --border:    #e2dbef;
+  --border-strong:#cfc5e2;
+  --text:      #36304f;
+  --text-muted:#6e6588;
+  --text-faint:#9c95b4;
+  --pm:        #8076a0;
+}
+[data-aesthetic="neutral"][data-theme="dark"] {
+  --bg:        #14121c;
+  --surface:   #1c1926;
+  --surface-2: #232030;
+  --surface-3: #2b2740;
+  --border:    #2c2940;
+  --border-strong:#3d3a55;
+  --text:      #ece8f6;
+  --text-muted:#a39db8;
+  --text-faint:#6a6680;
+  --pm:        #908aa6;
+  --accent:    #a99ae0;
+  --shadow-card: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.55);
+}
+
+/* ============================================================================
+   AESTHETIC 3 — QUIET TECHNICAL  (near-monochrome, mono metadata, hairlines)
+   ============================================================================ */
+[data-aesthetic="technical"] {
+  --font-ui:    "IBM Plex Sans", system-ui, sans-serif;
+  --font-prose: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono:  "IBM Plex Mono", ui-monospace, monospace;
+  --r-card: 6px; --r-sm: 4px; --r-chip: 5px;
+  --shadow-card: none;
+  --hair: 1px;
+  --prose-size: .98em; --prose-tracking: 0;
+  --accent: #2f81f7;
+}
+[data-aesthetic="technical"][data-theme="light"] {
+  --bg:        #f0f1f2;
+  --surface:   #fbfbfc;
+  --surface-2: #f3f4f6;
+  --surface-3: #e9eaed;
+  --border:    #e0e2e6;
+  --border-strong:#c8ccd2;
+  --text:      #14171c;
+  --text-muted:#5a6270;
+  --text-faint:#969ba6;
+  --pm:        #6b7280;
+}
+[data-aesthetic="technical"][data-theme="dark"] {
+  --bg:        #0a0c10;
+  --surface:   #101317;
+  --surface-2: #161a20;
+  --surface-3: #1d222a;
+  --border:    #1f242c;
+  --border-strong:#2d343e;
+  --text:      #e6e9ee;
+  --text-muted:#8b94a3;
+  --text-faint:#586173;
+  --pm:        #7c8696;
+  --accent:    #4c8df6;
+  --shadow-card: none;
+}
+
+/* ============================================================================
+   Base element styling
+   ============================================================================ */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs);
+  line-height: var(--lh);
+  transition: background .35s ease, color .35s ease;
+}
+::selection { background: color-mix(in oklab, var(--accent) 28%, transparent); }
+
+/* thin, calm scrollbars */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--text-faint) 40%, transparent);
+  border-radius: 999px; border: 3px solid transparent; background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: color-mix(in oklab, var(--text-faint) 70%, transparent); background-clip: padding-box; }
+
+.mono { font-family: var(--font-mono); font-variant-ligatures: none; }
+
+/* tabular helpers */
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* shimmer for streaming thinking */
+@keyframes rt-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+.rt-shimmer {
+  background: linear-gradient(90deg,
+    color-mix(in oklab, var(--text-faint) 55%, transparent) 0%,
+    color-mix(in oklab, var(--text) 75%, transparent) 50%,
+    color-mix(in oklab, var(--text-faint) 55%, transparent) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: rt-shimmer 2.2s ease-in-out infinite;
+}
+
+@keyframes rt-spin { to { transform: rotate(360deg); } }
+@keyframes rt-blink { 0%,100% { opacity: 1; } 50% { opacity: .2; } }
+@keyframes rt-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes rt-pulse-ring { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--run) 50%, transparent); } 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+.rt-rise { animation: rt-rise .45s cubic-bezier(.2,.7,.3,1) both; }
+
+/* streaming caret */
+.rt-caret::after {
+  content: "▍"; margin-left: 1px; color: var(--accent);
+  animation: rt-blink 1s steps(1) infinite; font-weight: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* ---- roundtable scene ---------------------------------------------------- */
+@keyframes rt-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes rt-glow {
+  0%   { box-shadow: 0 0 0 0 var(--glow-c, var(--run)), 0 6px 18px -6px rgba(0,0,0,.25); }
+  70%  { box-shadow: 0 0 0 10px transparent, 0 6px 18px -6px rgba(0,0,0,.25); }
+  100% { box-shadow: 0 0 0 0 transparent, 0 6px 18px -6px rgba(0,0,0,.25); }
+}
+@keyframes rt-dash { to { stroke-dashoffset: -24; } }
+@keyframes rt-pop { from { opacity: 0; transform: translate(-50%, -94%) scale(.92); } to { opacity: 1; transform: translate(-50%, -100%) scale(1); } }
+@keyframes rt-place { from { opacity: 0; transform: translate(-50%,-50%) scale(.6) rotate(var(--rot,0deg)); } to { opacity: 1; transform: translate(-50%,-50%) scale(1) rotate(var(--rot,0deg)); } }
+@keyframes rt-fadein { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rt-zoom { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+.rt-zoom { animation: rt-zoom .2s cubic-bezier(.2,.8,.3,1) both; }
+.rt-pop { animation: rt-pop .4s cubic-bezier(.2,.8,.3,1) both; }
+.rt-place { animation: rt-place .5s cubic-bezier(.2,.8,.3,1) both; }
+.rt-bob { animation: rt-bob 4.5s ease-in-out infinite; }
+.rt-member:hover .rt-member-x { display: grid !important; }
+.rt-seat:hover .rt-seat-dm { display: grid !important; }
+.rt-seat:hover { filter: none !important; }
+.rt-fade { animation: rt-fadein .4s ease both; }
+
+@media (max-width: 520px) {
+  .rt-workflow-strip {
+    width: 100%;
+    gap: 2px !important;
+  }
+
+  .rt-workflow-connector {
+    width: 7px !important;
+  }
+
+  .rt-workflow-step {
+    flex: 0 1 auto;
+    padding: 4px 6px !important;
+  }
+
+  .rt-workflow-step:not(.is-active) .rt-workflow-label {
+    display: none;
+  }
+}

@@ -1,0 +1,683 @@
+{
+  "format": "roundtable.workflow-builtins",
+  "version": 1,
+  "templates": [
+    {
+      "id": "wf-feature-builder",
+      "name": "Feature Builder",
+      "tag": "Flagship",
+      "desc": "Turn a vague request into a planned, implemented, reviewed, and reportable feature.",
+      "builtin": true,
+      "version": 1,
+      "updatedAt": "2026-07-01T00:00:00.000Z",
+      "planning": {
+        "cut": "by_capability",
+        "clarifyThreshold": 0.6,
+        "maxClarifyQuestions": 3
+      },
+      "stages": [
+        {
+          "id": "intake",
+          "name": "Intake",
+          "icon": "clip",
+          "kind": "intake",
+          "desc": "Capture the user goal, repo context, constraints, and desired output.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "user"
+              }
+            }
+          ],
+          "fixed": true,
+          "gate": {
+            "kind": "none",
+            "required": false,
+            "label": "Goal captured",
+            "description": "The Mission has an initial goal.",
+            "actions": []
+          },
+          "requiredInputs": [
+            "goal"
+          ],
+          "expectedOutputs": [
+            "intake artifact"
+          ],
+          "requiredCapabilities": []
+        },
+        {
+          "id": "clarify",
+          "name": "Clarify",
+          "icon": "search",
+          "kind": "clarify",
+          "desc": "Ask only for missing decisions that would change the plan.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "planner",
+                "agentId": "orchestrator"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "pm",
+                "agentId": "mira"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "requirement_clarification",
+            "required": true,
+            "label": "Clarification",
+            "description": "The planner pauses when the request is too vague.",
+            "actions": [
+              "answer_questions"
+            ]
+          },
+          "requiredInputs": [
+            "goal"
+          ],
+          "expectedOutputs": [
+            "clarified requirements"
+          ],
+          "requiredCapabilities": [
+            "mission.planning",
+            "product.briefing"
+          ]
+        },
+        {
+          "id": "plan",
+          "name": "Plan",
+          "icon": "layers",
+          "kind": "plan",
+          "desc": "Produce a technical plan and split the work into agent-owned tasks.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "planner",
+                "agentId": "orchestrator"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "architect",
+                "agentId": "nova"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "plan_approval",
+            "required": true,
+            "label": "Plan approval",
+            "description": "The user approves the plan before agents execute.",
+            "actions": [
+              "approve_plan",
+              "reject_plan"
+            ]
+          },
+          "requiredInputs": [
+            "clarified requirements"
+          ],
+          "expectedOutputs": [
+            "plan artifact",
+            "task graph"
+          ],
+          "requiredCapabilities": [
+            "workflow.decomposition",
+            "technical.plan"
+          ]
+        },
+        {
+          "id": "build",
+          "name": "Build",
+          "icon": "code",
+          "kind": "work",
+          "desc": "Implementers produce code and preview artifacts from structured handoffs.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "implementer",
+                "agentId": "atlas"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "implementer",
+                "agentId": "beam"
+              }
+            }
+          ],
+          "parallelGroup": "build",
+          "gate": {
+            "kind": "handoff_acceptance",
+            "required": false,
+            "label": "Handoff accepted",
+            "description": "Each implementer receives a compact context package.",
+            "actions": [
+              "inspect_handoff"
+            ]
+          },
+          "requiredInputs": [
+            "approved plan",
+            "handoff card"
+          ],
+          "expectedOutputs": [
+            "generated artifacts",
+            "edited artifacts"
+          ],
+          "requiredCapabilities": [
+            "frontend.implementation",
+            "backend.implementation"
+          ]
+        },
+        {
+          "id": "review",
+          "name": "Review",
+          "icon": "eye",
+          "kind": "review",
+          "desc": "Reviewer checks requirement coverage; the architect audits modularity, hardcoding, and reuse.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "reviewer",
+                "agentId": "vera"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "architect",
+                "agentId": "nova"
+              }
+            }
+          ],
+          "parallelGroup": "review",
+          "gate": {
+            "kind": "reviewer_signoff",
+            "required": true,
+            "label": "Reviewer confidence",
+            "description": "Final delivery is blocked until the reviewer reports pass/warn/block.",
+            "actions": [
+              "request_repair",
+              "accept_review"
+            ]
+          },
+          "requiredInputs": [
+            "build artifacts"
+          ],
+          "expectedOutputs": [
+            "review artifact",
+            "architecture check",
+            "risk list",
+            "confidence recommendation"
+          ],
+          "requiredCapabilities": [
+            "review.quality_gate",
+            "risk.assessment",
+            "architecture.review"
+          ]
+        },
+        {
+          "id": "repair",
+          "name": "Repair",
+          "icon": "wrench",
+          "kind": "repair",
+          "desc": "Apply focused fixes when safety or review blocks the run.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "fixer",
+                "agentId": "fixer"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "test_failure_repair",
+            "required": false,
+            "label": "Repair required",
+            "description": "Failures create follow-up repair work instead of mutating completed tasks.",
+            "actions": [
+              "run_repair"
+            ]
+          },
+          "requiredInputs": [
+            "failed task or blocking review"
+          ],
+          "expectedOutputs": [
+            "repair artifact",
+            "change summary"
+          ],
+          "requiredCapabilities": [
+            "repair.implementation"
+          ]
+        },
+        {
+          "id": "ship",
+          "name": "Delivery",
+          "icon": "rocket",
+          "kind": "ship",
+          "desc": "Package the working deliverable with acceptance evidence and next action.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "planner",
+                "agentId": "orchestrator"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "reviewer",
+                "agentId": "vera"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "final_delivery_acceptance",
+            "required": true,
+            "label": "Delivery acceptance",
+            "description": "The user accepts the delivered artifact or requests repair.",
+            "actions": [
+              "accept_delivery",
+              "request_repair"
+            ]
+          },
+          "requiredInputs": [
+            "working artifact",
+            "review artifact"
+          ],
+          "expectedOutputs": [
+            "working delivery",
+            "acceptance summary"
+          ],
+          "requiredCapabilities": [
+            "confidence_report",
+            "mission.planning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-bug-fixer",
+      "name": "Bug Fixer",
+      "tag": "Diagnosis",
+      "desc": "Diagnose a bug, patch it, verify the fix, and summarize residual risk.",
+      "builtin": true,
+      "version": 1,
+      "updatedAt": "2026-07-01T00:00:00.000Z",
+      "planning": {
+        "cut": "by_capability",
+        "clarifyThreshold": 0.55,
+        "maxClarifyQuestions": 3
+      },
+      "stages": [
+        {
+          "id": "intake",
+          "name": "Intake",
+          "icon": "clip",
+          "kind": "intake",
+          "desc": "Capture symptoms, expected behavior, logs, and repro hints.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "user"
+              }
+            }
+          ],
+          "fixed": true,
+          "gate": {
+            "kind": "none",
+            "required": false,
+            "label": "Bug captured",
+            "description": "The Mission has a bug report.",
+            "actions": []
+          },
+          "requiredInputs": [
+            "bug report"
+          ],
+          "expectedOutputs": [
+            "bug intake"
+          ],
+          "requiredCapabilities": []
+        },
+        {
+          "id": "plan",
+          "name": "Diagnose",
+          "icon": "search",
+          "kind": "plan",
+          "desc": "Map likely causes and pick the smallest safe fix path.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "planner",
+                "agentId": "orchestrator"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "architect",
+                "agentId": "nova"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "plan_approval",
+            "required": true,
+            "label": "Fix plan approval",
+            "description": "The user approves the diagnosis before patching.",
+            "actions": [
+              "approve_plan",
+              "reject_plan"
+            ]
+          },
+          "requiredInputs": [
+            "bug intake"
+          ],
+          "expectedOutputs": [
+            "diagnosis plan"
+          ],
+          "requiredCapabilities": [
+            "technical.plan",
+            "risk_modeling"
+          ]
+        },
+        {
+          "id": "build",
+          "name": "Patch",
+          "icon": "wrench",
+          "kind": "work",
+          "desc": "Apply the focused patch and preserve surrounding behavior.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "implementer",
+                "agentId": "beam"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "implementer",
+                "agentId": "atlas"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "none",
+            "required": false,
+            "label": "Patch ready",
+            "description": "The patch can proceed after plan approval.",
+            "actions": []
+          },
+          "requiredInputs": [
+            "approved diagnosis"
+          ],
+          "expectedOutputs": [
+            "patch artifact"
+          ],
+          "requiredCapabilities": [
+            "backend.implementation",
+            "frontend.implementation"
+          ]
+        },
+        {
+          "id": "review",
+          "name": "Verify",
+          "icon": "eye",
+          "kind": "review",
+          "desc": "Reviewer checks the repro path and regression risk; the architect confirms the patch stays modular.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "reviewer",
+                "agentId": "vera"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "architect",
+                "agentId": "nova"
+              }
+            }
+          ],
+          "parallelGroup": "review",
+          "gate": {
+            "kind": "reviewer_signoff",
+            "required": true,
+            "label": "Verification sign-off",
+            "description": "A reviewer must confirm the fix before delivery.",
+            "actions": [
+              "request_repair",
+              "accept_review"
+            ]
+          },
+          "requiredInputs": [
+            "patch artifact"
+          ],
+          "expectedOutputs": [
+            "verification report",
+            "architecture check"
+          ],
+          "requiredCapabilities": [
+            "review.quality_gate",
+            "test_evidence",
+            "architecture.review"
+          ]
+        },
+        {
+          "id": "ship",
+          "name": "Delivery",
+          "icon": "rocket",
+          "kind": "ship",
+          "desc": "Package the patch, verification, and remaining risk.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "planner",
+                "agentId": "orchestrator"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "final_delivery_acceptance",
+            "required": true,
+            "label": "Delivery acceptance",
+            "description": "The user accepts the bug-fix delivery.",
+            "actions": [
+              "accept_delivery",
+              "request_repair"
+            ]
+          },
+          "requiredInputs": [
+            "verification report"
+          ],
+          "expectedOutputs": [
+            "patch delivery summary"
+          ],
+          "requiredCapabilities": [
+            "mission.planning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-codebase-onboarding",
+      "name": "Codebase Onboarding",
+      "tag": "Discovery",
+      "desc": "Understand an unfamiliar repo, map architecture, and propose starter tasks.",
+      "builtin": true,
+      "version": 1,
+      "updatedAt": "2026-07-01T00:00:00.000Z",
+      "planning": {
+        "cut": "by_capability",
+        "clarifyThreshold": 0.5,
+        "maxClarifyQuestions": 2
+      },
+      "stages": [
+        {
+          "id": "intake",
+          "name": "Intake",
+          "icon": "clip",
+          "kind": "intake",
+          "desc": "Capture what the user wants to learn or change.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "user"
+              }
+            }
+          ],
+          "fixed": true,
+          "gate": {
+            "kind": "none",
+            "required": false,
+            "label": "Scope captured",
+            "description": "The onboarding scope is recorded.",
+            "actions": []
+          },
+          "requiredInputs": [
+            "repo path",
+            "learning goal"
+          ],
+          "expectedOutputs": [
+            "onboarding intake"
+          ],
+          "requiredCapabilities": []
+        },
+        {
+          "id": "plan",
+          "name": "Map",
+          "icon": "layers",
+          "kind": "plan",
+          "desc": "Create a codebase map with major modules, flows, and ownership hints.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "architect",
+                "agentId": "nova"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "planner",
+                "agentId": "orchestrator"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "none",
+            "required": false,
+            "label": "Map ready",
+            "description": "The architecture map can proceed directly.",
+            "actions": []
+          },
+          "requiredInputs": [
+            "repo context"
+          ],
+          "expectedOutputs": [
+            "architecture map"
+          ],
+          "requiredCapabilities": [
+            "system.design",
+            "dependency.mapping"
+          ]
+        },
+        {
+          "id": "review",
+          "name": "Check",
+          "icon": "eye",
+          "kind": "review",
+          "desc": "Review the map for unsupported guesses and missing context.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "reviewer",
+                "agentId": "vera"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "reviewer_signoff",
+            "required": true,
+            "label": "Confidence check",
+            "description": "The reviewer marks the onboarding map pass/warn/block.",
+            "actions": [
+              "accept_review",
+              "request_more_context"
+            ]
+          },
+          "requiredInputs": [
+            "architecture map"
+          ],
+          "expectedOutputs": [
+            "confidence report"
+          ],
+          "requiredCapabilities": [
+            "review.quality_gate"
+          ]
+        },
+        {
+          "id": "ship",
+          "name": "Starter Tasks",
+          "icon": "rocket",
+          "kind": "ship",
+          "desc": "Deliver starter tasks and recommended next actions.",
+          "seats": [
+            {
+              "ref": {
+                "kind": "role",
+                "role": "pm",
+                "agentId": "mira"
+              }
+            },
+            {
+              "ref": {
+                "kind": "role",
+                "role": "planner",
+                "agentId": "orchestrator"
+              }
+            }
+          ],
+          "gate": {
+            "kind": "final_delivery_acceptance",
+            "required": true,
+            "label": "Accept onboarding",
+            "description": "The user accepts or refines the onboarding output.",
+            "actions": [
+              "accept_delivery",
+              "request_refinement"
+            ]
+          },
+          "requiredInputs": [
+            "confidence report"
+          ],
+          "expectedOutputs": [
+            "starter task list"
+          ],
+          "requiredCapabilities": [
+            "product.briefing",
+            "mission.planning"
+          ]
+        }
+      ]
+    }
+  ]
+}

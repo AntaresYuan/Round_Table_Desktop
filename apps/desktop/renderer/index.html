@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; worker-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Roundtable Desktop</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Roundtable Desktop</p>
+          <h1>Local agent control room</h1>
+          <p data-system-details>Connecting to the desktop runtime…</p>
+        </div>
+        <button class="primary" type="button" data-select-workspace>
+          Open workspace
+        </button>
+      </header>
+
+      <div class="desktop-grid">
+        <section
+          class="workspace-panel"
+          aria-labelledby="workspace-title"
+          data-workspace-panel
+          aria-busy="false"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Authorized workspace</p>
+              <h2 id="workspace-title" data-workspace-heading>No workspace selected</h2>
+            </div>
+            <div class="path-controls" aria-label="Workspace location">
+              <button class="secondary" type="button" data-up disabled>Up</button>
+              <code
+                data-path-label
+                tabindex="-1"
+                aria-live="polite"
+                aria-atomic="true"
+              >/</code>
+            </div>
+          </div>
+          <ul class="entries" data-workspace-entries></ul>
+          <p class="status" role="status" aria-live="polite" data-status>
+            Choose a local repository to begin.
+          </p>
+        </section>
+
+        <section
+          class="mission-panel"
+          aria-labelledby="mission-title"
+          data-mission-panel
+          aria-busy="false"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Real local execution</p>
+              <h2 id="mission-title">Mission</h2>
+            </div>
+          </div>
+
+          <form class="mission-form" data-mission-form>
+            <label for="mission-provider">Agent provider</label>
+            <select id="mission-provider" data-provider disabled>
+              <option value="">Inspecting local agents…</option>
+            </select>
+            <p class="field-help" data-provider-status>
+              Runtime availability is checked locally.
+            </p>
+
+            <label for="mission-prompt">What should the agent do?</label>
+            <textarea
+              id="mission-prompt"
+              data-prompt
+              rows="7"
+              maxlength="12000"
+              placeholder="Describe one concrete outcome for this workspace."
+              disabled
+            ></textarea>
+            <button class="primary" type="submit" data-prepare disabled>
+              Review mission
+            </button>
+          </form>
+
+          <article class="approval-panel" data-approval-panel hidden>
+            <div class="card-heading">
+              <div>
+                <p class="eyebrow">Approval required</p>
+                <h3 data-approval-heading tabindex="-1">Review before running</h3>
+              </div>
+              <span class="state-badge warning">Not started</span>
+            </div>
+            <dl class="approval-overview">
+              <dt>Workspace</dt>
+              <dd data-approval-workspace></dd>
+              <dt>Agent</dt>
+              <dd data-approval-provider></dd>
+            </dl>
+            <div class="prompt-preview">
+              <p class="eyebrow">Exact prompt</p>
+              <pre data-approval-prompt></pre>
+            </div>
+            <dl class="policy-grid" data-approval-policy></dl>
+            <ul class="approval-warnings" data-approval-warnings hidden></ul>
+            <p class="field-help" data-approval-expiry></p>
+            <div class="action-row">
+              <button class="secondary" type="button" data-edit-mission>
+                Back to edit
+              </button>
+              <button class="primary" type="button" data-approve>
+                Approve &amp; run
+              </button>
+            </div>
+          </article>
+
+          <article class="execution-panel" data-execution-panel hidden>
+            <div class="card-heading">
+              <div>
+                <p class="eyebrow">Runtime-confirmed execution</p>
+                <h3 data-execution-heading tabindex="-1">Agent execution</h3>
+              </div>
+              <span class="state-badge" data-execution-state data-state="synchronizing">
+                Synchronizing
+              </span>
+            </div>
+            <p class="execution-summary" data-execution-summary></p>
+            <div class="action-row execution-actions">
+              <button class="danger" type="button" data-stop hidden>Stop</button>
+              <button class="secondary" type="button" data-new-mission hidden>
+                New mission
+              </button>
+            </div>
+
+            <div class="execution-columns">
+              <div>
+                <h4>Live output</h4>
+                <ul
+                  class="execution-log"
+                  role="log"
+                  aria-label="Agent output"
+                  aria-live="off"
+                  data-execution-log
+                >
+                  <li class="log-empty">Waiting for Runtime output.</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Changed files</h4>
+                <ul class="artifacts" data-artifacts>
+                  <li class="artifact-empty">No changed files observed yet.</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-panel" data-review-panel hidden>
+            <div class="card-heading">
+              <div>
+                <p class="eyebrow">Workspace change review</p>
+                <h3 data-review-heading tabindex="-1">Review staged changes</h3>
+              </div>
+              <span class="state-badge" data-review-state data-state="reviewing">Review</span>
+            </div>
+            <p class="field-help" data-review-summary></p>
+            <ul class="review-changes" data-review-changes>
+              <li class="review-empty">No staged changes.</li>
+            </ul>
+            <div class="action-row">
+              <button class="secondary" type="button" data-reject-review>Reject changes</button>
+              <button class="primary" type="button" data-apply-review>Approve &amp; apply</button>
+            </div>
+          </article>
+
+          <p class="status mission-status" role="status" aria-live="polite" data-mission-status>
+            Open a workspace, choose an available agent, and describe the mission.
+          </p>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="./renderer.js"></script>
+  </body>
+</html>

@@ -1,0 +1,3532 @@
+{
+  "format": "roundtable.turn-scenes",
+  "version": 1,
+  "timeline": "feature-builder-synthetic-live.timeline.json",
+  "generatedWith": "scripts/generate-turn-scenes.mjs",
+  "agents": [
+    {
+      "agentId": "orchestrator",
+      "role": "planner",
+      "displayName": "Planning",
+      "mention": "planning",
+      "pm": true
+    },
+    {
+      "agentId": "mira",
+      "role": "pm",
+      "displayName": "Mira",
+      "mention": "pm"
+    },
+    {
+      "agentId": "atlas",
+      "role": "implementer",
+      "displayName": "Atlas",
+      "mention": "atlas"
+    },
+    {
+      "agentId": "beam",
+      "role": "implementer",
+      "displayName": "Beam",
+      "mention": "beam"
+    },
+    {
+      "agentId": "vera",
+      "role": "reviewer",
+      "displayName": "Vera",
+      "mention": "vera"
+    },
+    {
+      "agentId": "nova",
+      "role": "architect",
+      "displayName": "Nova",
+      "mention": "nova"
+    },
+    {
+      "agentId": "fixer",
+      "role": "fixer",
+      "displayName": "Fixer",
+      "mention": "fixer"
+    }
+  ],
+  "meetingDurationsMs": {
+    "meeting_opening": 10152,
+    "meeting_position_mira": 8046,
+    "meeting_position_nova": 9585,
+    "meeting_facilitation_execution": 6000,
+    "meeting_commitment_atlas": 8424,
+    "meeting_challenge_vera": 7236,
+    "meeting_decision_planner": 6000
+  },
+  "steps": [
+    {
+      "id": "pending",
+      "frameIndex": null,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "speaking",
+          "mira": "idle",
+          "atlas": "idle",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "idle",
+          "fixer": "idle"
+        },
+        "speech": {
+          "agentId": "orchestrator",
+          "mode": "speaking",
+          "text": "I am reading the project context, then the team will speak in order: plan, architecture, execution, and risk.",
+          "phase": "opening",
+          "step": 1,
+          "steps": 1
+        },
+        "planPosted": false,
+        "work": {},
+        "run": {
+          "phase": "planning_meeting",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "meetingStep": 1,
+          "meetingSteps": 1
+        },
+        "tasks": [],
+        "placed": []
+      }
+    },
+    {
+      "id": "frame-0/meeting-0",
+      "frameIndex": 0,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": false
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "speaking",
+          "mira": "thinking",
+          "atlas": "thinking",
+          "beam": "idle",
+          "vera": "thinking",
+          "nova": "thinking",
+          "fixer": "idle"
+        },
+        "speech": {
+          "agentId": "orchestrator",
+          "mode": "speaking",
+          "text": "Quick alignment: we need to solve this — Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.. Planning, PM, Nova, Atlas, Vera, Mira will pin down the user outcome, Nova will look at how it fits the existing project, then implementation and review will respond. If anything is unclear, risky, or genuinely blocked, say it now.",
+          "phase": "opening",
+          "step": 1,
+          "steps": 7
+        },
+        "planPosted": false,
+        "work": {},
+        "run": {
+          "phase": "planning_meeting",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "meetingStep": 1,
+          "meetingSteps": 7
+        },
+        "tasks": [],
+        "placed": []
+      }
+    },
+    {
+      "id": "frame-0/meeting-1",
+      "frameIndex": 0,
+      "playback": {
+        "meetingMessageIndex": 1,
+        "meetingComplete": false
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "thinking",
+          "mira": "speaking",
+          "atlas": "thinking",
+          "beam": "idle",
+          "vera": "thinking",
+          "nova": "thinking",
+          "fixer": "idle"
+        },
+        "speech": {
+          "agentId": "mira",
+          "mode": "speaking",
+          "text": "I would keep this round focused on the experience the user explicitly asked for, without quietly adding a backend, accounts, or an operations system. I will call it done when the main journey works, the important actions are clear, mobile holds up, and any content or brand assumptions are visible.",
+          "phase": "position",
+          "step": 2,
+          "steps": 7
+        },
+        "planPosted": false,
+        "work": {},
+        "run": {
+          "phase": "planning_meeting",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "meetingStep": 2,
+          "meetingSteps": 7
+        },
+        "tasks": [],
+        "placed": []
+      }
+    },
+    {
+      "id": "frame-0/meeting-2",
+      "frameIndex": 0,
+      "playback": {
+        "meetingMessageIndex": 2,
+        "meetingComplete": false
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "thinking",
+          "mira": "thinking",
+          "atlas": "thinking",
+          "beam": "idle",
+          "vera": "thinking",
+          "nova": "speaking",
+          "fixer": "idle"
+        },
+        "speech": {
+          "agentId": "nova",
+          "mode": "speaking",
+          "text": "Structurally, I would choose one existing directory as the baseline and extend its page and styling conventions instead of creating a third near-duplicate project. We can keep page structure, visuals, content, and interaction separate, but the real entrypoint and asset paths still need checking because this is only a compact scan (No linked repository).",
+          "phase": "position",
+          "step": 3,
+          "steps": 7
+        },
+        "planPosted": false,
+        "work": {},
+        "run": {
+          "phase": "planning_meeting",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "meetingStep": 3,
+          "meetingSteps": 7
+        },
+        "tasks": [],
+        "placed": []
+      }
+    },
+    {
+      "id": "frame-0/meeting-3",
+      "frameIndex": 0,
+      "playback": {
+        "meetingMessageIndex": 3,
+        "meetingComplete": false
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "speaking",
+          "mira": "thinking",
+          "atlas": "thinking",
+          "beam": "idle",
+          "vera": "thinking",
+          "nova": "thinking",
+          "fixer": "idle"
+        },
+        "speech": {
+          "agentId": "orchestrator",
+          "mode": "speaking",
+          "text": "Good, we have the outcome and a technical direction. Atlas, tell us what is immediately workable, what needs adjusting, and where you would start. If something is not feasible, raise it now.",
+          "phase": "facilitation",
+          "step": 4,
+          "steps": 7
+        },
+        "planPosted": false,
+        "work": {},
+        "run": {
+          "phase": "planning_meeting",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "meetingStep": 4,
+          "meetingSteps": 7
+        },
+        "tasks": [],
+        "placed": []
+      }
+    },
+    {
+      "id": "frame-0/meeting-4",
+      "frameIndex": 0,
+      "playback": {
+        "meetingMessageIndex": 4,
+        "meetingComplete": false
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "thinking",
+          "mira": "thinking",
+          "atlas": "speaking",
+          "beam": "idle",
+          "vera": "thinking",
+          "nova": "thinking",
+          "fixer": "idle"
+        },
+        "speech": {
+          "agentId": "atlas",
+          "mode": "speaking",
+          "text": "I can take this direction. I will confirm the real entrypoint, reusable pieces, and asset paths before starting Build · awaiting plan (Atlas); if the code contradicts our structural assumptions, I will bring that back instead of forcing it. I will include mobile and critical-interaction checks with the handoff.",
+          "phase": "commitment",
+          "step": 5,
+          "steps": 7
+        },
+        "planPosted": false,
+        "work": {},
+        "run": {
+          "phase": "planning_meeting",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "meetingStep": 5,
+          "meetingSteps": 7
+        },
+        "tasks": [],
+        "placed": []
+      }
+    },
+    {
+      "id": "frame-0/meeting-5",
+      "frameIndex": 0,
+      "playback": {
+        "meetingMessageIndex": 5,
+        "meetingComplete": false
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "thinking",
+          "mira": "thinking",
+          "atlas": "thinking",
+          "beam": "idle",
+          "vera": "speaking",
+          "nova": "thinking",
+          "fixer": "idle"
+        },
+        "speech": {
+          "agentId": "vera",
+          "mode": "speaking",
+          "text": "I do not see a hard blocker, so the team can start. Keep an eye on two things: editing the wrong duplicate baseline, and motion or assets hurting mobile. At delivery I want real file changes, a critical-path test, a mobile check, and any remaining risk stated plainly.",
+          "phase": "challenge",
+          "step": 6,
+          "steps": 7
+        },
+        "planPosted": false,
+        "work": {},
+        "run": {
+          "phase": "planning_meeting",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "meetingStep": 6,
+          "meetingSteps": 7
+        },
+        "tasks": [],
+        "placed": []
+      }
+    },
+    {
+      "id": "frame-0/meeting-6",
+      "frameIndex": 0,
+      "playback": {
+        "meetingMessageIndex": 6,
+        "meetingComplete": false
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "speaking",
+          "mira": "thinking",
+          "atlas": "thinking",
+          "beam": "idle",
+          "vera": "thinking",
+          "nova": "thinking",
+          "fixer": "idle"
+        },
+        "speech": {
+          "agentId": "orchestrator",
+          "mode": "speaking",
+          "text": "All right, that is the direction. I have arranged 4 execution tasks with clear owners, order, and acceptance checks. Work starts after user approval, and nobody jumps an unfinished prerequisite.",
+          "phase": "decision",
+          "step": 7,
+          "steps": 7
+        },
+        "planPosted": false,
+        "work": {},
+        "run": {
+          "phase": "planning_meeting",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "meetingStep": 7,
+          "meetingSteps": 7
+        },
+        "tasks": [],
+        "placed": []
+      }
+    },
+    {
+      "id": "frame-0",
+      "frameIndex": 0,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "idle",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "idle",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {},
+        "run": {
+          "phase": "awaiting_approval",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "not_started",
+          "artifactCount": 2,
+          "workspacePath": null
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-1",
+      "frameIndex": 1,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "idle",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "working",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "nova": {
+            "taskId": "task_nova",
+            "mode": "starting",
+            "text": "Starting up…",
+            "tool": null,
+            "steps": 0
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-2",
+      "frameIndex": 2,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "idle",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "thinking",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "nova": {
+            "taskId": "task_nova",
+            "mode": "thinking",
+            "text": "architect received the handoff and prepared .roundtable/runs/docs/architecture-for-create-a-waitlist-flow-with-email-capture-valid.md.",
+            "tool": null,
+            "steps": 1
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-3",
+      "frameIndex": 3,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "idle",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "working",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "nova": {
+            "taskId": "task_nova",
+            "mode": "working",
+            "text": "Using write_artifact",
+            "tool": "write_artifact",
+            "steps": 2
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-4",
+      "frameIndex": 4,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "idle",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "working",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "nova": {
+            "taskId": "task_nova",
+            "mode": "speaking",
+            "text": "Created .roundtable/runs/docs/architecture-for-create-a-waitlist-flow-with-email-capture-valid.md.",
+            "tool": null,
+            "steps": 3
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-5",
+      "frameIndex": 5,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "idle",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "idle",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {},
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-6",
+      "frameIndex": 6,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "working",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "idle",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "atlas": {
+            "taskId": "task_atlas",
+            "mode": "starting",
+            "text": "Starting up…",
+            "tool": null,
+            "steps": 0
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-7",
+      "frameIndex": 7,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "thinking",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "idle",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "atlas": {
+            "taskId": "task_atlas",
+            "mode": "thinking",
+            "text": "implementer received the handoff and prepared .roundtable/runs/work/build-create-a-waitlist-flow-with-email-capture-validation-persi.md.",
+            "tool": null,
+            "steps": 1
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-8",
+      "frameIndex": 8,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "working",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "idle",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "atlas": {
+            "taskId": "task_atlas",
+            "mode": "working",
+            "text": "Using write_artifact",
+            "tool": "write_artifact",
+            "steps": 2
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-9",
+      "frameIndex": 9,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "working",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "idle",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "atlas": {
+            "taskId": "task_atlas",
+            "mode": "speaking",
+            "text": "Created .roundtable/runs/work/build-create-a-waitlist-flow-with-email-capture-validation-persi.md.",
+            "tool": null,
+            "steps": 3
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-10",
+      "frameIndex": 10,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "done",
+          "beam": "idle",
+          "vera": "idle",
+          "nova": "idle",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {},
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "pending"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-11",
+      "frameIndex": 11,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "done",
+          "beam": "idle",
+          "vera": "working",
+          "nova": "working",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "vera": {
+            "taskId": "task_vera",
+            "mode": "starting",
+            "text": "Starting up…",
+            "tool": null,
+            "steps": 0
+          },
+          "nova": {
+            "taskId": "task_nova_review",
+            "mode": "starting",
+            "text": "Starting up…",
+            "tool": null,
+            "steps": 0
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-12",
+      "frameIndex": 12,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "done",
+          "beam": "idle",
+          "vera": "thinking",
+          "nova": "thinking",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "vera": {
+            "taskId": "task_vera",
+            "mode": "thinking",
+            "text": "reviewer received the handoff and prepared .roundtable/runs/review/review-create-a-waitlist-flow-with-email-capture-validation-pers.md.",
+            "tool": null,
+            "steps": 1
+          },
+          "nova": {
+            "taskId": "task_nova_review",
+            "mode": "thinking",
+            "text": "architect received the handoff and prepared .roundtable/runs/docs/architecture-check-for-create-a-waitlist-flow-with-email-capture.md.",
+            "tool": null,
+            "steps": 1
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-13",
+      "frameIndex": 13,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "done",
+          "beam": "idle",
+          "vera": "working",
+          "nova": "working",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "vera": {
+            "taskId": "task_vera",
+            "mode": "working",
+            "text": "Using write_artifact",
+            "tool": "write_artifact",
+            "steps": 2
+          },
+          "nova": {
+            "taskId": "task_nova_review",
+            "mode": "working",
+            "text": "Using write_artifact",
+            "tool": "write_artifact",
+            "steps": 2
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-14",
+      "frameIndex": 14,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "done",
+          "beam": "idle",
+          "vera": "working",
+          "nova": "working",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {
+          "vera": {
+            "taskId": "task_vera",
+            "mode": "speaking",
+            "text": "Created .roundtable/runs/review/review-create-a-waitlist-flow-with-email-capture-validation-pers.md.",
+            "tool": null,
+            "steps": 3
+          },
+          "nova": {
+            "taskId": "task_nova_review",
+            "mode": "speaking",
+            "text": "Created .roundtable/runs/docs/architecture-check-for-create-a-waitlist-flow-with-email-capture.md.",
+            "tool": null,
+            "steps": 3
+          }
+        },
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "running"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-15",
+      "frameIndex": 15,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "done",
+          "beam": "idle",
+          "vera": "done",
+          "nova": "done",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {},
+        "run": {
+          "phase": "running",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "running",
+          "artifactCount": 2,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    },
+    {
+      "id": "frame-16",
+      "frameIndex": 16,
+      "playback": {
+        "meetingMessageIndex": 0,
+        "meetingComplete": true
+      },
+      "scene": {
+        "live": true,
+        "started": true,
+        "status": {
+          "orchestrator": "done",
+          "mira": "idle",
+          "atlas": "done",
+          "beam": "idle",
+          "vera": "done",
+          "nova": "done",
+          "fixer": "idle"
+        },
+        "speech": null,
+        "planPosted": true,
+        "work": {},
+        "run": {
+          "phase": "completed",
+          "message": "Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.",
+          "provider": "roundtable-local",
+          "model": "agent-chain-v1",
+          "dispatchStatus": "completed",
+          "artifactCount": 8,
+          "workspacePath": "$WORKSPACE"
+        },
+        "tasks": [
+          {
+            "id": "task_nova",
+            "title": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "plan",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_planning. Do not start until all are completed.",
+            "deps": [],
+            "parallel": false,
+            "stageKind": "plan",
+            "objective": "Inspect the real entrypoint and reusable code, then define page structure, data flow, module boundaries, and implementation constraints.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_atlas",
+            "title": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas)",
+            "assignee": "@atlas",
+            "owner": "atlas",
+            "role": "implementer",
+            "stageId": "build",
+            "requiredCapabilities": [
+              "frontend.implementation",
+              "ui.integration",
+              "artifact.preview"
+            ],
+            "brief": "Build Create a waitlist flow with email capture, validation, persistence, and a review (Atlas). Agent: Atlas. Role: implementer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.\n\nAcceptance criteria:\n- The assigned slice works in the existing project.\n- Relevant tests or verification evidence are recorded.\n\nLocked prerequisites: task_planning, task_nova. Do not start until all are completed.",
+            "deps": [
+              "task_nova"
+            ],
+            "parallel": false,
+            "stageKind": "work",
+            "objective": "Build the core pages and interactions in the existing project for: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state., with a runnable result and mobile verification.",
+            "acceptanceCriteria": [
+              "The assigned slice works in the existing project.",
+              "Relevant tests or verification evidence are recorded."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_vera",
+            "title": "Review Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@vera",
+            "owner": "vera",
+            "role": "reviewer",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "review.quality_gate",
+              "risk.assessment",
+              "test_evidence"
+            ],
+            "brief": "Review Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Vera. Role: reviewer. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.\n\nAcceptance criteria:\n- Requirements and regression risks are checked.\n- Blocking findings use explicit severity and evidence.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Independently check requirement coverage, critical interactions, mobile behavior, and regressions, with evidence for every blocker.",
+            "acceptanceCriteria": [
+              "Requirements and regression risks are checked.",
+              "Blocking findings use explicit severity and evidence."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          },
+          {
+            "id": "task_nova_review",
+            "title": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review",
+            "assignee": "@nova",
+            "owner": "nova",
+            "role": "architect",
+            "stageId": "review",
+            "requiredCapabilities": [
+              "system.design",
+              "dependency.mapping",
+              "technical.plan",
+              "architecture.review",
+              "code.modularity"
+            ],
+            "brief": "Architecture check for Create a waitlist flow with email capture, validation, persistence, and a review. Agent: Nova. Role: architect. User request: Create a waitlist flow with email capture, validation, persistence, and a reviewed confirmation state.\n\nPlanning meeting objective: Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.\n\nAcceptance criteria:\n- Module boundaries and reused interfaces are named.\n- Hardcoded values and integration risks are called out.\n\nLocked prerequisites: task_atlas. Do not start until all are completed.",
+            "deps": [
+              "task_atlas"
+            ],
+            "parallel": true,
+            "stageKind": "review",
+            "objective": "Check that the implementation follows the agreed module boundaries, reuse strategy, and dependencies, and flag integration risk.",
+            "acceptanceCriteria": [
+              "Module boundaries and reused interfaces are named.",
+              "Hardcoded values and integration risks are called out."
+            ],
+            "meetingDecisionIds": [
+              "meeting_decision_1",
+              "meeting_decision_2"
+            ],
+            "status": "completed"
+          }
+        ],
+        "placed": [
+          {
+            "id": "live-code-log",
+            "title": "roundtable-live-run.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "intake_local-live-capture-1789844335585",
+            "title": "mission/intake.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "plan_local-live-capture-1789844335585",
+            "title": "mission/plan.json",
+            "kind": "code",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          },
+          {
+            "id": "task_nova_live-capture-1789844335585",
+            "title": ".roundtable/runs/docs/architecture-for-create-a-waitlist-flow-with-email-capture-valid.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "nova"
+          },
+          {
+            "id": "task_atlas_live-capture-1789844335585",
+            "title": ".roundtable/runs/work/build-create-a-waitlist-flow-with-email-capture-validation-persi.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "atlas"
+          },
+          {
+            "id": "task_vera_live-capture-1789844335585",
+            "title": ".roundtable/runs/review/review-create-a-waitlist-flow-with-email-capture-validation-pers.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "vera"
+          },
+          {
+            "id": "task_nova_review_live-capture-1789844335585",
+            "title": ".roundtable/runs/docs/architecture-check-for-create-a-waitlist-flow-with-email-capture.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "nova"
+          },
+          {
+            "id": "review_summary_live-capture-1789844335585",
+            "title": "reports/review-summary.json",
+            "kind": "spec",
+            "version": 1,
+            "ownerAgentId": "vera"
+          },
+          {
+            "id": "final_report_live-capture-1789844335585",
+            "title": "reports/final-delivery.md",
+            "kind": "markdown",
+            "version": 1,
+            "ownerAgentId": "orchestrator"
+          }
+        ]
+      }
+    }
+  ]
+}
